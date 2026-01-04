@@ -1,0 +1,43 @@
+package com.reindecar.repository.rental;
+
+import com.reindecar.entity.rental.Rental;
+import com.reindecar.entity.rental.RentalStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface RentalRepository extends JpaRepository<Rental, Long> {
+
+    Optional<Rental> findByRentalNumber(String rentalNumber);
+
+    @Query("SELECT r FROM Rental r WHERE r.status = :status")
+    Page<Rental> findByStatus(RentalStatus status, Pageable pageable);
+
+    @Query("SELECT r FROM Rental r WHERE r.status IN ('ACTIVE', 'OVERDUE')")
+    Page<Rental> findActiveRentals(Pageable pageable);
+
+    @Query("SELECT r FROM Rental r WHERE r.status = 'OVERDUE'")
+    Page<Rental> findOverdueRentals(Pageable pageable);
+
+    @Query("SELECT r FROM Rental r WHERE " +
+           "r.vehicleId = :vehicleId AND " +
+           "r.status NOT IN ('CLOSED', 'CANCELLED') AND " +
+           "((r.startDate <= :endDate AND r.endDate >= :startDate))")
+    List<Rental> findOverlappingRentals(Long vehicleId, LocalDate startDate, LocalDate endDate);
+
+    @Query("SELECT r FROM Rental r WHERE r.customerId = :customerId")
+    Page<Rental> findByCustomerId(Long customerId, Pageable pageable);
+
+    @Query("SELECT r FROM Rental r WHERE r.vehicleId = :vehicleId")
+    Page<Rental> findByVehicleId(Long vehicleId, Pageable pageable);
+
+    @Query("SELECT COUNT(r) FROM Rental r WHERE r.rentalNumber LIKE :prefix%")
+    long countByRentalNumberPrefix(String prefix);
+}
