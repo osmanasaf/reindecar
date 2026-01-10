@@ -1,6 +1,12 @@
-package com.reindecar.service.customer;
+ package com.reindecar.service.customer;
+
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
+
+import com.reindecar.common.exception.BusinessException;
 
 import com.reindecar.common.exception.EntityNotFoundException;
+import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.common.service.BaseService;
 import com.reindecar.dto.customer.AuthorizedPersonResponse;
 import com.reindecar.dto.customer.CreateAuthorizedPersonRequest;
@@ -129,7 +135,7 @@ public class AuthorizedPersonService extends BaseService<AuthorizedPerson, Long,
     private void validateNotLastActivePerson(Long companyCustomerId, Long personId) {
         long activeCount = repository.countActiveByCompanyCustomerId(companyCustomerId);
         if (activeCount <= 1) {
-            throw new IllegalStateException("Cannot deactivate the last active authorized person");
+            throw new BusinessException(ErrorCode.INVALID_OPERATION, "Cannot deactivate the last active authorized person");
         }
     }
 }

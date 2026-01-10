@@ -1,7 +1,9 @@
 package com.reindecar.service.user;
 
 import com.reindecar.common.dto.PageResponse;
+import com.reindecar.common.exception.BusinessException;
 import com.reindecar.common.exception.DuplicateEntityException;
+import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.entity.user.Role;
 import com.reindecar.entity.user.User;
 import com.reindecar.dto.user.*;
@@ -145,7 +147,7 @@ public class UserService {
         validatePasswordStrength(request.password());
 
         if (request.role() == Role.OPERATOR && request.branchId() == null) {
-            throw new IllegalArgumentException("OPERATOR users must have a branch assignment");
+            throw new BusinessException(ErrorCode.INVALID_OPERATION, "OPERATOR users must have a branch assignment");
         }
 
         String passwordHash = passwordEncoder.encode(request.password());

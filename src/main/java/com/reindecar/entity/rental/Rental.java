@@ -1,5 +1,8 @@
 package com.reindecar.entity.rental;
 
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
+
 import com.reindecar.common.entity.BaseEntity;
 import com.reindecar.common.statemachine.StateMachine;
 import com.reindecar.common.valueobject.Money;
@@ -138,11 +141,11 @@ public class Rental extends BaseEntity {
             String createdBy) {
         
         if (endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException("End date must be after start date");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "End date must be after start date");
         }
         
         if (startDate.isBefore(LocalDate.now().minusDays(1))) {
-            throw new IllegalArgumentException("Start date cannot be in the past");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "Start date cannot be in the past");
         }
         
         Rental rental = new Rental();
@@ -184,7 +187,7 @@ public class Rental extends BaseEntity {
 
     public void complete(LocalDate actualReturnDate, int endKm, Money extraKmCharge) {
         if (endKm < this.startKm) {
-            throw new IllegalArgumentException("End km cannot be less than start km");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "End km cannot be less than start km");
         }
         
         this.actualReturnDate = actualReturnDate;
@@ -195,7 +198,7 @@ public class Rental extends BaseEntity {
 
     public void cancel() {
         if (!status.canBeCancelled()) {
-            throw new IllegalStateException("Rental cannot be cancelled in status: " + status);
+            throw new BusinessException(ErrorCode.INVALID_OPERATION, "Rental cannot be cancelled in status: " + status);
         }
         changeStatus(RentalStatus.CANCELLED);
     }
@@ -208,7 +211,7 @@ public class Rental extends BaseEntity {
 
     public void extend(LocalDate newEndDate) {
         if (newEndDate.isBefore(this.endDate)) {
-            throw new IllegalArgumentException("New end date must be after current end date");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "New end date must be after current end date");
         }
         this.endDate = newEndDate;
         this.updatedAt = Instant.now();

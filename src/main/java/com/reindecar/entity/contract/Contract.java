@@ -1,6 +1,11 @@
 package com.reindecar.entity.contract;
 
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
+
 import com.reindecar.common.entity.BaseEntity;
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
@@ -98,7 +103,7 @@ public class Contract extends BaseEntity {
 
     public void sign(String signedBy, String signatureMethod) {
         if (!status.canBeSigned()) {
-            throw new IllegalStateException("Contract cannot be signed in status: " + status);
+            throw new BusinessException(ErrorCode.INVALID_OPERATION, "Contract cannot be signed in status: " + status);
         }
         
         this.signedAt = Instant.now();
@@ -110,7 +115,7 @@ public class Contract extends BaseEntity {
 
     public void cancel() {
         if (!status.canBeCancelled()) {
-            throw new IllegalStateException("Contract cannot be cancelled in status: " + status);
+            throw new BusinessException(ErrorCode.INVALID_OPERATION, "Contract cannot be cancelled in status: " + status);
         }
         
         this.status = ContractStatus.CANCELLED;

@@ -32,47 +32,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getHttpStatus()).body(response);
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(
-            EntityNotFoundException ex, HttpServletRequest request) {
-        log.warn("Entity not found: {}", ex.getMessage());
-        
-        ErrorResponse response = ErrorResponse.of(
-            ErrorCode.ENTITY_NOT_FOUND,
-            request.getRequestURI(),
-            ex.getMessage()
-        );
-        
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
 
-    @ExceptionHandler(DuplicateEntityException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateEntityException(
-            DuplicateEntityException ex, HttpServletRequest request) {
-        log.warn("Duplicate entity: {}", ex.getMessage());
-        
-        ErrorResponse response = ErrorResponse.of(
-            ErrorCode.DUPLICATE_ENTITY,
-            request.getRequestURI(),
-            ex.getMessage()
-        );
-        
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-    }
-
-    @ExceptionHandler(InvalidOperationException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidOperationException(
-            InvalidOperationException ex, HttpServletRequest request) {
-        log.warn("Invalid operation: {}", ex.getMessage());
-        
-        ErrorResponse response = ErrorResponse.of(
-            ErrorCode.INVALID_OPERATION,
-            request.getRequestURI(),
-            ex.getMessage()
-        );
-        
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(

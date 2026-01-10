@@ -1,5 +1,8 @@
 package com.reindecar.entity.vehicle;
 
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
+
 import com.reindecar.common.entity.AuditableEntity;
 import com.reindecar.common.statemachine.StateMachine;
 import com.reindecar.common.valueobject.Money;
@@ -128,15 +131,15 @@ public class Vehicle extends AuditableEntity {
             String notes) {
         
         if (year < 1900 || year > LocalDate.now().getYear() + 1) {
-            throw new IllegalArgumentException("Invalid vehicle year");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "Invalid vehicle year");
         }
         
         if (currentKm < 0) {
-            throw new IllegalArgumentException("Kilometers cannot be negative");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "Kilometers cannot be negative");
         }
         
         if (seatCount < 1 || seatCount > 50) {
-            throw new IllegalArgumentException("Seat count must be between 1 and 50");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "Seat count must be between 1 and 50");
         }
         
         Vehicle vehicle = new Vehicle();
@@ -193,14 +196,14 @@ public class Vehicle extends AuditableEntity {
 
     public void changeBranch(Long newBranchId) {
         if (!this.status.isAvailableForRental()) {
-            throw new IllegalStateException("Can only change branch when vehicle is AVAILABLE");
+            throw new BusinessException(ErrorCode.INVALID_OPERATION, "Can only change branch when vehicle is AVAILABLE");
         }
         this.branchId = newBranchId;
     }
 
     public void updateKilometers(int newKm) {
         if (newKm < this.currentKm) {
-            throw new IllegalArgumentException("Kilometers cannot decrease");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "Kilometers cannot decrease");
         }
         this.currentKm = newKm;
     }

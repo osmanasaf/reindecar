@@ -25,17 +25,7 @@ public class BusinessException extends RuntimeException {
         return new BusinessException(errorCode, args);
     }
 
-    public static BusinessException entityNotFound(String entityName, Object id) {
-        return new BusinessException(ErrorCode.ENTITY_NOT_FOUND, entityName + " (ID: " + id + ")");
-    }
 
-    public static BusinessException duplicate(String description) {
-        return new BusinessException(ErrorCode.DUPLICATE_ENTITY, description);
-    }
-
-    public static BusinessException invalidOperation(String reason) {
-        return new BusinessException(ErrorCode.INVALID_OPERATION, reason);
-    }
 
     public String getCode() {
         return errorCode.getCode();

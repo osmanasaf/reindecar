@@ -1,5 +1,7 @@
 package com.reindecar.common.valueobject;
 
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -103,7 +105,7 @@ public class Money {
 
     private void validateSameCurrency(Money other) {
         if (!this.currency.equals(other.currency)) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER,
                     String.format("Currency mismatch: %s vs %s", this.currency, other.currency)
             );
         }

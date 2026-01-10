@@ -1,5 +1,7 @@
 package com.reindecar.common.valueobject;
 
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -42,10 +44,10 @@ public class CreditScore {
 
     private void validateScore(Integer score) {
         if (score == null) {
-            throw new IllegalArgumentException("Credit score cannot be null");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "Credit score cannot be null");
         }
         if (score < 0 || score > 2000) {
-            throw new IllegalArgumentException("Credit score must be between 0 and 2000");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "Credit score must be between 0 and 2000");
         }
     }
 

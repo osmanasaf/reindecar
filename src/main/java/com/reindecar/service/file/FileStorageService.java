@@ -5,6 +5,8 @@ import com.reindecar.dto.file.UploadFileRequest;
 import com.reindecar.entity.file.FileMetadata;
 import com.reindecar.entity.file.FileReferenceType;
 import com.reindecar.repository.file.FileMetadataRepository;
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,7 +64,7 @@ public class FileStorageService {
 
     public FileResponse getById(Long id) {
         FileMetadata metadata = fileMetadataRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("File not found"));
+            .orElseThrow(() -> new BusinessException(ErrorCode.FILE_NOT_FOUND, "File not found"));
         return toResponse(metadata);
     }
 
@@ -75,14 +77,14 @@ public class FileStorageService {
 
     public InputStream getFileContent(Long id) {
         FileMetadata metadata = fileMetadataRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("File not found"));
+            .orElseThrow(() -> new BusinessException(ErrorCode.FILE_NOT_FOUND, "File not found"));
         return storageStrategy.retrieve(metadata.getPath());
     }
 
     @Transactional
     public void deleteFile(Long id) {
         FileMetadata metadata = fileMetadataRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("File not found"));
+            .orElseThrow(() -> new BusinessException(ErrorCode.FILE_NOT_FOUND, "File not found"));
 
         storageStrategy.delete(metadata.getPath());
         fileMetadataRepository.delete(metadata);
@@ -91,22 +93,22 @@ public class FileStorageService {
 
     public String getPublicUrl(Long id) {
         FileMetadata metadata = fileMetadataRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("File not found"));
+            .orElseThrow(() -> new BusinessException(ErrorCode.FILE_NOT_FOUND, "File not found"));
         return storageStrategy.getPublicUrl(metadata.getPath());
     }
 
     private void validateFile(MultipartFile file) {
         if (file.isEmpty()) {
-            throw new IllegalArgumentException("File is empty");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "File is empty");
         }
 
         if (file.getSize() > maxFileSize) {
-            throw new IllegalArgumentException("File size exceeds maximum allowed size");
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "File size exceeds maximum allowed size");
         }
 
         String extension = extractExtension(file.getOriginalFilename());
         if (extension == null || !ALLOWED_EXTENSIONS.contains(extension.toLowerCase())) {
-            throw new IllegalArgumentException("File type not allowed");
+            throw new BusinessException(ErrorCode.FILE_TYPE_NOT_ALLOWED, "File type not allowed");
         }
     }
 

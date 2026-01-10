@@ -3,6 +3,8 @@ package com.reindecar.service.vehicle;
 import com.reindecar.common.dto.PageResponse;
 import com.reindecar.common.exception.DuplicateEntityException;
 import com.reindecar.common.exception.EntityNotFoundException;
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.common.service.BaseService;
 import com.reindecar.dto.vehicle.CreateVehicleRequest;
 import com.reindecar.dto.vehicle.UpdateVehicleStatusRequest;
@@ -118,7 +120,7 @@ public class VehicleService extends BaseService<Vehicle, Long, VehicleRepository
 
         update(id, vehicle -> {
             if (vehicle.getStatus().isRented()) {
-                throw new IllegalStateException("Cannot delete rented vehicle");
+                throw new BusinessException(ErrorCode.INVALID_OPERATION, "Cannot delete rented vehicle");
             }
             vehicle.markAsDeleted();
             return vehicle;

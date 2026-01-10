@@ -1,5 +1,10 @@
 package com.reindecar.service.rental;
 
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
+
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.common.valueobject.Money;
 import com.reindecar.dto.pricing.CalculatePriceRequest;
 import com.reindecar.dto.pricing.PriceCalculationResponse;
@@ -106,7 +111,7 @@ public class CreateRentalUseCase {
             .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
         
         if (!vehicle.getStatus().isAvailableForRental()) {
-            throw new IllegalStateException("Vehicle is not available for rental");
+            throw new BusinessException(ErrorCode.VEHICLE_NOT_AVAILABLE, "Vehicle is not available for rental: " + vehicleId);
         }
         
         return vehicle;

@@ -1,6 +1,11 @@
 package com.reindecar.entity.rental;
 
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
+
 import com.reindecar.common.entity.BaseEntity;
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.common.valueobject.Money;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -231,7 +236,7 @@ public class RentalInvoice extends BaseEntity {
 
     public void finalizeInvoice() {
         if (this.status != InvoiceStatus.DRAFT) {
-            throw new IllegalStateException("Only draft invoices can be finalized");
+            throw new BusinessException(ErrorCode.INVALID_OPERATION, "Only draft invoices can be finalized");
         }
         calculateTotals();
         this.status = InvoiceStatus.FINALIZED;
@@ -239,14 +244,14 @@ public class RentalInvoice extends BaseEntity {
 
     public void markAsPaid() {
         if (this.status == InvoiceStatus.CANCELLED) {
-            throw new IllegalStateException("Cancelled invoices cannot be marked as paid");
+            throw new BusinessException(ErrorCode.INVALID_OPERATION, "Cancelled invoices cannot be marked as paid");
         }
         this.status = InvoiceStatus.PAID;
     }
 
     public void cancel() {
         if (this.status == InvoiceStatus.PAID) {
-            throw new IllegalStateException("Paid invoices cannot be cancelled");
+            throw new BusinessException(ErrorCode.INVALID_OPERATION, "Paid invoices cannot be cancelled");
         }
         this.status = InvoiceStatus.CANCELLED;
     }

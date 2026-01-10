@@ -1,6 +1,9 @@
 package com.reindecar.mapper.customer;
 
 import com.reindecar.common.valueobject.CreditScore;
+import com.reindecar.common.dto.PageResponse;
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.dto.customer.*;
 import com.reindecar.entity.customer.AuthorizedPerson;
 import com.reindecar.entity.customer.Customer;
@@ -18,7 +21,7 @@ public interface CustomerMapper {
         } else if (customer instanceof CustomerCompany company) {
             return toCompanyResponse(company);
         }
-        throw new IllegalArgumentException("Unknown customer type");
+        throw new BusinessException(ErrorCode.INVALID_PARAMETER, "Unknown customer type");
     }
 
     @Mapping(target = "displayName", expression = "java(customer.getDisplayName())")

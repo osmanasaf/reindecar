@@ -1,6 +1,8 @@
 package com.reindecar.service.file;
 
 import lombok.extern.slf4j.Slf4j;
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -40,7 +42,7 @@ public class LocalStorageStrategy implements StorageStrategy {
             log.info("File stored locally: {}", targetPath);
             return targetPath.toString();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to store file locally", e);
+            throw new BusinessException(ErrorCode.FILE_UPLOAD_FAILED, "Failed to store file locally: " + e.getMessage());
         }
     }
 
@@ -49,7 +51,7 @@ public class LocalStorageStrategy implements StorageStrategy {
         try {
             return Files.newInputStream(Paths.get(path));
         } catch (IOException e) {
-            throw new RuntimeException("Failed to retrieve file", e);
+            throw new BusinessException(ErrorCode.FILE_NOT_FOUND, "Failed to retrieve file: " + e.getMessage());
         }
     }
 
