@@ -127,50 +127,50 @@ public class DataSeeder {
             if (vehicleCategoryRepository.count() == 0) {
                 log.info("Seeding vehicle categories...");
 
-                VehicleCategory eco = VehicleCategory.create(
-                    "ECO",
-                    "Economic Class",
-                    "Fuel efficient, compact cars perfect for city driving",
-                    Money.tl(1200),
+                VehicleCategory pool = VehicleCategory.create(
+                    "POOL",
+                    "Havuz Araçlar",
+                    "Genel kullanım için havuz araçları",
+                    Money.tl(1500),
                     1
                 );
-                vehicleCategoryRepository.save(eco);
+                vehicleCategoryRepository.save(pool);
 
-                VehicleCategory comf = VehicleCategory.create(
-                    "COMF",
-                    "Comfort Class",
-                    "Spacious sedans for comfortable long drives",
-                    Money.tl(1800),
+                VehicleCategory executive = VehicleCategory.create(
+                    "EXECUTIVE",
+                    "Yönetici Araçlar",
+                    "Yönetici kadrosu için tahsisli araçlar",
+                    Money.tl(3000),
                     2
                 );
-                vehicleCategoryRepository.save(comf);
+                vehicleCategoryRepository.save(executive);
 
-                VehicleCategory suv = VehicleCategory.create(
-                    "SUV",
-                    "SUV 4x4",
-                    "Powerful SUVs for all terrains",
+                VehicleCategory dedicated = VehicleCategory.create(
+                    "DEDICATED",
+                    "Özel Tahsis",
+                    "Belirli müşterilere özel tahsis edilmiş araçlar",
                     Money.tl(2500),
                     3
                 );
-                vehicleCategoryRepository.save(suv);
+                vehicleCategoryRepository.save(dedicated);
 
-                VehicleCategory prm = VehicleCategory.create(
-                    "PRM",
-                    "Premium Class",
-                    "Luxury vehicles for executive travel",
-                    Money.tl(3500),
+                VehicleCategory protocol = VehicleCategory.create(
+                    "PROTOCOL",
+                    "Makam Araçları",
+                    "Protokol ve makam hizmetleri için araçlar",
+                    Money.tl(5000),
                     4
                 );
-                vehicleCategoryRepository.save(prm);
+                vehicleCategoryRepository.save(protocol);
 
-                VehicleCategory lux = VehicleCategory.create(
-                    "LUX",
-                    "Luxury Class",
-                    "Top tier luxury cars",
-                    Money.tl(5000),
+                VehicleCategory welcome = VehicleCategory.create(
+                    "WELCOME",
+                    "Karşılama Araçlar",
+                    "Havalimanı ve özel karşılama hizmetleri için araçlar",
+                    Money.tl(2000),
                     5
                 );
-                vehicleCategoryRepository.save(lux);
+                vehicleCategoryRepository.save(welcome);
 
                 log.info("Seeded {} vehicle categories", vehicleCategoryRepository.count());
             }
@@ -183,13 +183,13 @@ public class DataSeeder {
                 Branch ankara = branchRepository.findByCode("ANK01").orElse(null);
                 Branch izmir = branchRepository.findByCode("IZM01").orElse(null);
 
-                VehicleCategory eco = vehicleCategoryRepository.findByCode("ECO").orElse(null);
-                VehicleCategory comf = vehicleCategoryRepository.findByCode("COMF").orElse(null);
-                VehicleCategory suv = vehicleCategoryRepository.findByCode("SUV").orElse(null);
-                VehicleCategory prm = vehicleCategoryRepository.findByCode("PRM").orElse(null);
-                VehicleCategory lux = vehicleCategoryRepository.findByCode("LUX").orElse(null);
+                VehicleCategory pool = vehicleCategoryRepository.findByCode("POOL").orElse(null);
+                VehicleCategory executive = vehicleCategoryRepository.findByCode("EXECUTIVE").orElse(null);
+                VehicleCategory dedicated = vehicleCategoryRepository.findByCode("DEDICATED").orElse(null);
+                VehicleCategory protocol = vehicleCategoryRepository.findByCode("PROTOCOL").orElse(null);
+                VehicleCategory welcome = vehicleCategoryRepository.findByCode("WELCOME").orElse(null);
 
-                if (istanbul != null && eco != null) {
+                if (istanbul != null && pool != null) {
                     Vehicle egea = Vehicle.create(
                         "34ABC123",
                         "TR123456789012345",
@@ -201,19 +201,19 @@ public class DataSeeder {
                         Transmission.MANUAL,
                         1300,
                         5,
-                        eco.getId(),
+                        pool.getId(),
                         istanbul.getId(),
                         15000,
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2023, 1, 15),
-                        eco.getDefaultDailyPrice(),
-                        "Clean condition"
+                        pool.getDefaultDailyPrice(),
+                        "Havuz aracı - genel kullanım"
                     );
                     vehicleRepository.save(egea);
                 }
 
-                if (istanbul != null && comf != null) {
+                if (istanbul != null && executive != null) {
                     Vehicle passat = Vehicle.create(
                         "34DEF456",
                         "TR123456789012346",
@@ -225,43 +225,43 @@ public class DataSeeder {
                         Transmission.AUTOMATIC,
                         1600,
                         5,
-                        comf.getId(),
+                        executive.getId(),
                         istanbul.getId(),
                         25000,
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2023, 3, 20),
-                        comf.getDefaultDailyPrice(),
-                        "Business class choice"
+                        executive.getDefaultDailyPrice(),
+                        "Yönetici aracı"
                     );
                     vehicleRepository.save(passat);
                 }
 
-                if (ankara != null && eco != null) {
+                if (ankara != null && dedicated != null) {
                     Vehicle clio = Vehicle.create(
                         "06GHI789",
                         "TR123456789012347",
                         "Renault",
-                        "Clio",
+                        "Megane",
                         2024,
                         "Red",
                         FuelType.GASOLINE,
                         Transmission.AUTOMATIC,
                         1000,
                         5,
-                        eco.getId(),
+                        dedicated.getId(),
                         ankara.getId(),
                         5000,
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2024, 1, 10),
-                        eco.getDefaultDailyPrice(),
-                        "Brand new"
+                        dedicated.getDefaultDailyPrice(),
+                        "Özel tahsis - Müşteri XYZ"
                     );
                     vehicleRepository.save(clio);
                 }
 
-                if (izmir != null && suv != null) {
+                if (izmir != null && welcome != null) {
                     Vehicle xc90 = Vehicle.create(
                         "35JKL012",
                         "TR123456789012348",
@@ -273,19 +273,19 @@ public class DataSeeder {
                         Transmission.AUTOMATIC,
                         2000,
                         7,
-                        suv.getId(),
+                        welcome.getId(),
                         izmir.getId(),
                         30000,
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2023, 6, 15),
-                        suv.getDefaultDailyPrice(),
-                        "Premium SUV with extra safety"
+                        welcome.getDefaultDailyPrice(),
+                        "Havalimanı karşılama"
                     );
                     vehicleRepository.save(xc90);
                 }
 
-                if (istanbul != null && prm != null) {
+                if (istanbul != null && protocol != null) {
                     Vehicle bmw5 = Vehicle.create(
                         "34MNO345",
                         "TR123456789012349",
@@ -297,19 +297,19 @@ public class DataSeeder {
                         Transmission.AUTOMATIC,
                         1600,
                         5,
-                        prm.getId(),
+                        protocol.getId(),
                         istanbul.getId(),
                         8000,
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2024, 2, 1),
-                        prm.getDefaultDailyPrice(),
-                        "Executive car"
+                        protocol.getDefaultDailyPrice(),
+                        "Makam aracı - Genel Müdür"
                     );
                     vehicleRepository.save(bmw5);
                 }
 
-                 if (ankara != null && lux != null) {
+                 if (ankara != null && protocol != null) {
                     Vehicle mercedesS = Vehicle.create(
                         "06PQR678",
                         "TR123456789012350",
@@ -321,14 +321,14 @@ public class DataSeeder {
                         Transmission.AUTOMATIC,
                         3000,
                         5,
-                        lux.getId(),
+                        protocol.getId(),
                         ankara.getId(),
                         2000,
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2024, 5, 10),
-                        lux.getDefaultDailyPrice(),
-                        "Ultimate luxury"
+                        protocol.getDefaultDailyPrice(),
+                        "Makam aracı - CEO"
                     );
                     vehicleRepository.save(mercedesS);
                 }

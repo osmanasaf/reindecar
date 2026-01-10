@@ -3,9 +3,12 @@ package com.reindecar.controller.vehicle;
 import com.reindecar.common.dto.ApiResponse;
 import com.reindecar.common.dto.PageResponse;
 import com.reindecar.dto.vehicle.CreateVehicleRequest;
+import com.reindecar.dto.vehicle.UpdateVehicleDetailsRequest;
 import com.reindecar.dto.vehicle.UpdateVehicleStatusRequest;
+import com.reindecar.dto.vehicle.VehicleDetailsResponse;
 import com.reindecar.dto.vehicle.VehicleResponse;
 import com.reindecar.dto.vehicle.VehicleStatusHistoryResponse;
+import com.reindecar.service.vehicle.VehicleDetailsService;
 import com.reindecar.service.vehicle.VehicleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 public class VehicleController {
 
     private final VehicleService vehicleService;
+    private final VehicleDetailsService vehicleDetailsService;
+
 
     @GetMapping
     @Operation(summary = "Get all vehicles", description = "Returns paginated list of all vehicles")
@@ -111,4 +116,21 @@ public class VehicleController {
         PageResponse<VehicleStatusHistoryResponse> history = vehicleService.getVehicleHistory(id, pageable);
         return ApiResponse.success(history);
     }
+
+    @GetMapping("/{id}/details")
+    @Operation(summary = "Get vehicle details", description = "Returns HGS, KABIS, service, finance info")
+    public ApiResponse<VehicleDetailsResponse> getVehicleDetails(@PathVariable Long id) {
+        VehicleDetailsResponse details = vehicleDetailsService.getByVehicleId(id);
+        return ApiResponse.success(details);
+    }
+
+    @PutMapping("/{id}/details")
+    @Operation(summary = "Update vehicle details", description = "Updates HGS, KABIS, service, finance info")
+    public ApiResponse<VehicleDetailsResponse> updateVehicleDetails(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateVehicleDetailsRequest request) {
+        VehicleDetailsResponse details = vehicleDetailsService.updateDetails(id, request);
+        return ApiResponse.success("Vehicle details updated successfully", details);
+    }
 }
+

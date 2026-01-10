@@ -1,0 +1,19 @@
+package com.reindecar.entity.notification;
+
+public enum NotificationType {
+    KM_LIMIT_EXCEEDED,
+    KM_LIMIT_APPROACHING,
+    HGS_BALANCE_LOW,
+    INSPECTION_DUE,
+    INSURANCE_EXPIRING,
+    SERVICE_DUE,
+    TIRE_CHANGE_DUE,
+    MTV_DUE,
+    RENTAL_ENDING_SOON,
+    RENTAL_OVERDUE,
+    CONTRACT_EXPIRING,
+    PAYMENT_DUE,
+    PAYMENT_OVERDUE,
+    SYSTEM,
+    CUSTOM
+}
