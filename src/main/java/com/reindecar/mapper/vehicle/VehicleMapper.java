@@ -41,7 +41,7 @@ public interface VehicleMapper {
     }
 
     default Money toMoney(java.math.BigDecimal amount) {
-        return amount != null ? Money.of(amount, "TRY") : null;
+        return amount != null ? Money.of(amount, Money.DEFAULT_CURRENCY) : null;
     }
 
     default java.math.BigDecimal toAmount(Money money) {

@@ -1,5 +1,6 @@
 package com.reindecar.dto.rental;
 
+import com.reindecar.entity.customer.CustomerType;
 import com.reindecar.entity.pricing.RentalType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
@@ -9,12 +10,13 @@ import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @Schema(description = "Request to create a new rental")
 public record CreateRentalRequest(
     @NotNull(message = "Rental type is required")
-    @Schema(description = "Type of rental (DAILY, WEEKLY, MONTHLY)")
+    @Schema(description = "Type of rental (DAILY, WEEKLY, MONTHLY, LEASING)")
     RentalType rentalType,
 
     @NotNull(message = "Vehicle ID is required")
@@ -22,11 +24,24 @@ public record CreateRentalRequest(
     Long vehicleId,
 
     @NotNull(message = "Customer ID is required")
-    @Schema(description = "ID of the customer", example = "1")
+    @Schema(description = "ID of the customer (Person or Company)", example = "1")
     Long customerId,
 
-    @Schema(description = "ID of additional driver (optional)", example = "1")
-    Long driverId,
+    @NotNull(message = "Customer type is required")
+    @Schema(description = "Type of customer (PERSONAL or COMPANY)")
+    CustomerType customerType,
+
+    @Schema(description = "ID of contract signer (required for COMPANY)", example = "1")
+    Long contractSignerId,
+
+    @Schema(description = "Name of contract signer")
+    String contractSignerName,
+
+    @Schema(description = "List of driver IDs")
+    List<Long> driverIds,
+
+    @Schema(description = "Primary driver ID (must be in driverIds list)")
+    Long primaryDriverId,
 
     @NotNull(message = "Branch ID is required")
     @Schema(description = "Pickup branch ID", example = "1")

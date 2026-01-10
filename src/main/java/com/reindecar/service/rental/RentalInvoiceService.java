@@ -127,7 +127,7 @@ public class RentalInvoiceService {
             return pricing.get().calculateExtraKmCost(totalKm);
         }
 
-        return Money.zero("TRY");
+        return Money.zero(Money.DEFAULT_CURRENCY);
     }
 
     private String generateInvoiceNumber() {

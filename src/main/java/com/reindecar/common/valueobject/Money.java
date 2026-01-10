@@ -19,7 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Money {
 
-    private static final String DEFAULT_CURRENCY = "TRY";
+    public static final String DEFAULT_CURRENCY = "TRY";
     private static final int SCALE = 2;
     private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
 

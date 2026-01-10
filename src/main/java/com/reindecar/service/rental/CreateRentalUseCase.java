@@ -3,8 +3,6 @@ package com.reindecar.service.rental;
 import com.reindecar.common.exception.BusinessException;
 import com.reindecar.common.exception.ErrorCode;
 
-import com.reindecar.common.exception.BusinessException;
-import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.common.valueobject.Money;
 import com.reindecar.dto.pricing.CalculatePriceRequest;
 import com.reindecar.dto.pricing.PriceCalculationResponse;
@@ -12,11 +10,13 @@ import com.reindecar.dto.rental.CreateRentalRequest;
 import com.reindecar.entity.customer.Customer;
 import com.reindecar.entity.pricing.RentalType;
 import com.reindecar.entity.rental.Rental;
+import com.reindecar.entity.rental.RentalDriver;
 import com.reindecar.entity.vehicle.Vehicle;
 import com.reindecar.entity.vehicle.VehicleStatus;
 import com.reindecar.exception.customer.CustomerBlacklistedException;
 import com.reindecar.exception.rental.RentalOverlapException;
 import com.reindecar.repository.customer.CustomerRepository;
+import com.reindecar.repository.rental.RentalDriverRepository;
 import com.reindecar.repository.rental.RentalRepository;
 import com.reindecar.repository.vehicle.VehicleRepository;
 import com.reindecar.service.pricing.PriceCalculationService;
@@ -38,6 +38,7 @@ public class CreateRentalUseCase {
     private final RentalRepository rentalRepository;
     private final VehicleRepository vehicleRepository;
     private final CustomerRepository customerRepository;
+    private final RentalDriverRepository rentalDriverRepository;
     private final PriceCalculationService priceCalculationService;
     private final VehicleStatusService vehicleStatusService;
 
@@ -66,7 +67,9 @@ public class CreateRentalUseCase {
             request.rentalType(),
             request.vehicleId(),
             request.customerId(),
-            request.driverId(),
+            request.customerType(),
+            request.contractSignerId(),
+            request.contractSignerName(),
             request.branchId(),
             request.returnBranchId(),
             request.startDate(),
@@ -80,6 +83,8 @@ public class CreateRentalUseCase {
         );
 
         Rental savedRental = rentalRepository.save(rental);
+
+        addDriversToRental(savedRental.getId(), request.driverIds(), request.primaryDriverId(), createdBy);
 
         vehicle.changeStatus(VehicleStatus.RESERVED);
         vehicleRepository.save(vehicle);
@@ -95,6 +100,18 @@ public class CreateRentalUseCase {
 
         log.info("Rental created: {}", rentalNumber);
         return savedRental;
+    }
+
+    private void addDriversToRental(Long rentalId, List<Long> driverIds, Long primaryDriverId, String createdBy) {
+        if (driverIds == null || driverIds.isEmpty()) {
+            return;
+        }
+
+        for (Long driverId : driverIds) {
+            boolean isPrimary = driverId.equals(primaryDriverId);
+            RentalDriver rentalDriver = RentalDriver.create(rentalId, driverId, isPrimary, createdBy);
+            rentalDriverRepository.save(rentalDriver);
+        }
     }
 
     private void validateCustomerNotBlacklisted(Long customerId) {

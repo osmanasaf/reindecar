@@ -34,7 +34,7 @@ public class MaintenanceService {
         
         log.info("Recording maintenance for vehicle: {}", vehicleId);
 
-        Money costMoney = Money.of(cost, "TRY");
+        Money costMoney = Money.of(cost, Money.DEFAULT_CURRENCY);
 
         MaintenanceRecord record = MaintenanceRecord.create(
             vehicleId,

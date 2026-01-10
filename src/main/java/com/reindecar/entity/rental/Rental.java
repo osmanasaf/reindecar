@@ -6,6 +6,7 @@ import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.common.entity.BaseEntity;
 import com.reindecar.common.statemachine.StateMachine;
 import com.reindecar.common.valueobject.Money;
+import com.reindecar.entity.customer.CustomerType;
 import com.reindecar.entity.pricing.RentalType;
 import com.reindecar.service.rental.RentalStatusTransition;
 import jakarta.persistence.*;
@@ -42,8 +43,16 @@ public class Rental extends BaseEntity {
     @Column(nullable = false, name = "customer_id")
     private Long customerId;
 
-    @Column(name = "driver_id")
-    private Long driverId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "customer_type", nullable = false, length = 20)
+    private CustomerType customerType;
+
+    @Column(name = "contract_signer_id")
+    private Long contractSignerId;
+
+    @Size(max = 100)
+    @Column(name = "contract_signer_name", length = 100)
+    private String contractSignerName;
 
     @NotNull(message = "Branch ID is required")
     @Column(nullable = false, name = "branch_id")
@@ -128,7 +137,9 @@ public class Rental extends BaseEntity {
             RentalType rentalType,
             Long vehicleId,
             Long customerId,
-            Long driverId,
+            CustomerType customerType,
+            Long contractSignerId,
+            String contractSignerName,
             Long branchId,
             Long returnBranchId,
             LocalDate startDate,
@@ -153,7 +164,9 @@ public class Rental extends BaseEntity {
         rental.rentalType = rentalType;
         rental.vehicleId = vehicleId;
         rental.customerId = customerId;
-        rental.driverId = driverId;
+        rental.customerType = customerType;
+        rental.contractSignerId = contractSignerId;
+        rental.contractSignerName = contractSignerName;
         rental.branchId = branchId;
         rental.returnBranchId = returnBranchId;
         rental.status = RentalStatus.DRAFT;

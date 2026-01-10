@@ -18,7 +18,7 @@ public interface VehicleCategoryMapper {
             request.code(),
             request.name(),
             request.description(),
-            Money.of(request.defaultDailyPrice(), "TRY"),
+            Money.of(request.defaultDailyPrice(), Money.DEFAULT_CURRENCY),
             request.sortOrder()
         );
     }

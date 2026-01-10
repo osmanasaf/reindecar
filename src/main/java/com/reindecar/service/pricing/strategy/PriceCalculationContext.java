@@ -19,4 +19,26 @@ public class PriceCalculationContext {
     private LocalDate endDate;
     private int totalDays;
     private Money categoryDefaultPrice;
+    
+    // Leasing-specific fields
+    private int termMonths;
+    private Long kmPackageId;
+    private boolean isLeasing;
+    
+    public boolean isLeasingCalculation() {
+        return isLeasing || rentalType == RentalType.LEASING;
+    }
+    
+    public boolean isMonthlyRental() {
+        return rentalType == RentalType.MONTHLY;
+    }
+    
+    public int getEffectiveTermMonths() {
+        if (termMonths > 0) return termMonths;
+        // Calculate months from date range for monthly rentals
+        if (isMonthlyRental() && startDate != null && endDate != null) {
+            return (int) java.time.Period.between(startDate, endDate).toTotalMonths() + 1;
+        }
+        return 1;
+    }
 }

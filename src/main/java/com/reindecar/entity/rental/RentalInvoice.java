@@ -159,12 +159,12 @@ public class RentalInvoice extends BaseEntity {
         invoice.taxRate = taxRate;
         invoice.status = InvoiceStatus.DRAFT;
         invoice.createdAt = Instant.now();
-        invoice.baseRentalAmount = Money.zero("TRY");
-        invoice.extraKmAmount = Money.zero("TRY");
-        invoice.discountAmount = Money.zero("TRY");
-        invoice.totalAmount = Money.zero("TRY");
-        invoice.taxAmount = Money.zero("TRY");
-        invoice.grandTotal = Money.zero("TRY");
+        invoice.baseRentalAmount = Money.zero(Money.DEFAULT_CURRENCY);
+        invoice.extraKmAmount = Money.zero(Money.DEFAULT_CURRENCY);
+        invoice.discountAmount = Money.zero(Money.DEFAULT_CURRENCY);
+        invoice.totalAmount = Money.zero(Money.DEFAULT_CURRENCY);
+        invoice.taxAmount = Money.zero(Money.DEFAULT_CURRENCY);
+        invoice.grandTotal = Money.zero(Money.DEFAULT_CURRENCY);
         return invoice;
     }
 

@@ -41,10 +41,10 @@ public class VehicleInsuranceService {
         log.info("Creating insurance for vehicleId: {}, type: {}", request.vehicleId(), request.insuranceType());
 
         Money premium = request.premium() != null 
-            ? Money.of(request.premium(), "TRY") 
+            ? Money.of(request.premium(), Money.DEFAULT_CURRENCY) 
             : null;
         Money coverage = request.coverage() != null 
-            ? Money.of(request.coverage(), "TRY") 
+            ? Money.of(request.coverage(), Money.DEFAULT_CURRENCY) 
             : null;
 
         VehicleInsurance insurance = VehicleInsurance.create(

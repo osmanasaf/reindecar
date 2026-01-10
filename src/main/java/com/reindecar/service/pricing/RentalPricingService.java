@@ -56,8 +56,8 @@ public class RentalPricingService {
         log.info("Creating rental pricing: vehicle={}, customer={}, category={}",
             request.vehicleId(), request.customerId(), request.categoryId());
 
-        Money monthlyPrice = Money.of(request.monthlyPrice(), "TRY");
-        Money extraKmPrice = Money.of(request.extraKmPrice(), "TRY");
+        Money monthlyPrice = Money.of(request.monthlyPrice(), Money.DEFAULT_CURRENCY);
+        Money extraKmPrice = Money.of(request.extraKmPrice(), Money.DEFAULT_CURRENCY);
 
         RentalPricing pricing;
         if (request.vehicleId() != null) {

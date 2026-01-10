@@ -27,7 +27,7 @@ public class PaymentService {
     public Payment recordPayment(Long rentalId, RecordPaymentRequest request, String createdBy) {
         log.info("Recording payment for rental: {}", rentalId);
 
-        Money amount = Money.of(request.amount(), "TRY");
+        Money amount = Money.of(request.amount(), Money.DEFAULT_CURRENCY);
 
         Payment payment = Payment.create(
             rentalId,

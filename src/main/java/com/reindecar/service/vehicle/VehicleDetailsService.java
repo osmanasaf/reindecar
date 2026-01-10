@@ -23,7 +23,7 @@ public class VehicleDetailsService {
     private final VehicleDetailsRepository detailsRepository;
     private final VehicleRepository vehicleRepository;
 
-    private static final Money HGS_LOW_THRESHOLD = Money.of(BigDecimal.valueOf(100), "TRY");
+    private static final Money HGS_LOW_THRESHOLD = Money.of(BigDecimal.valueOf(100), Money.DEFAULT_CURRENCY);
     private static final int SERVICE_KM_THRESHOLD = 500;
     private static final int DAYS_THRESHOLD = 7;
 
@@ -73,7 +73,7 @@ public class VehicleDetailsService {
     private void updateFromRequest(VehicleDetails details, UpdateVehicleDetailsRequest request) {
         if (request.hgsNumber() != null || request.hgsBalance() != null) {
             Money balance = request.hgsBalance() != null 
-                ? Money.of(request.hgsBalance(), "TRY") 
+                ? Money.of(request.hgsBalance(), Money.DEFAULT_CURRENCY) 
                 : details.getHgsBalance();
             details.updateHgsInfo(request.hgsNumber(), balance);
         }
@@ -96,14 +96,14 @@ public class VehicleDetailsService {
         
         if (request.creditEndDate() != null || request.remainingCreditAmount() != null) {
             Money remaining = request.remainingCreditAmount() != null 
-                ? Money.of(request.remainingCreditAmount(), "TRY") 
+                ? Money.of(request.remainingCreditAmount(), Money.DEFAULT_CURRENCY) 
                 : details.getRemainingCreditAmount();
             details.updateFinanceInfo(request.creditEndDate(), remaining);
         }
         
         if (request.purchaseDate() != null || request.purchasePrice() != null) {
             Money price = request.purchasePrice() != null 
-                ? Money.of(request.purchasePrice(), "TRY") 
+                ? Money.of(request.purchasePrice(), Money.DEFAULT_CURRENCY) 
                 : details.getPurchasePrice();
             details.updatePurchaseInfo(request.purchaseDate(), price);
         }

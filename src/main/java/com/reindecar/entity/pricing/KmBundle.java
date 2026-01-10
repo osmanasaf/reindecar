@@ -56,11 +56,11 @@ public class KmBundle extends BaseEntity {
 
     public Money calculateExtraKmCost(int totalKmUsed) {
         if (totalKmUsed <= includedKm) {
-            return Money.zero("TRY");
+            return Money.zero(Money.DEFAULT_CURRENCY);
         }
 
         int extraKm = totalKmUsed - includedKm;
-        Money totalCost = Money.zero("TRY");
+        Money totalCost = Money.zero(Money.DEFAULT_CURRENCY);
         int remainingKm = extraKm;
 
         List<KmPricingTier> sortedTiers = pricingTiers.stream()

@@ -34,7 +34,7 @@ public class DamageService {
         
         log.info("Reporting damage for vehicle: {}", vehicleId);
 
-        Money costMoney = Money.of(estimatedCost, "TRY");
+        Money costMoney = Money.of(estimatedCost, Money.DEFAULT_CURRENCY);
 
         DamageReport report = DamageReport.create(
             vehicleId,
