@@ -36,3 +36,12 @@ build/
 md-files/
 GEMINI.md
 .gemini/
+
+### Dev Process Outputs ###
+agents/
+.agent/
+context.md
+compile_log.txt
+compile_output.txt
+*_output.md
+*_output.json

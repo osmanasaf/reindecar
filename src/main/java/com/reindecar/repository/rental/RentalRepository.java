@@ -40,4 +40,6 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
 
     @Query("SELECT COUNT(r) FROM Rental r WHERE r.rentalNumber LIKE :prefix%")
     long countByRentalNumberPrefix(String prefix);
+
+    List<Rental> findByRentalTypeAndStatus(com.reindecar.entity.pricing.RentalType rentalType, RentalStatus status);
 }

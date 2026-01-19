@@ -12,6 +12,8 @@ import java.util.Optional;
 @Repository
 public interface SeasonRepository extends JpaRepository<Season, Long> {
 
+    List<Season> findByActiveTrue();
+
     @Query("SELECT s FROM Season s WHERE s.active = true AND s.startDate <= :date AND s.endDate >= :date")
     Optional<Season> findActiveSeasonForDate(LocalDate date);
 
@@ -19,3 +21,4 @@ public interface SeasonRepository extends JpaRepository<Season, Long> {
            "((s.startDate <= :endDate AND s.endDate >= :startDate))")
     List<Season> findOverlappingSeasons(LocalDate startDate, LocalDate endDate);
 }
+
