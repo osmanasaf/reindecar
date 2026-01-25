@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 @Slf4j
 @Transactional(readOnly = true)
@@ -47,6 +49,19 @@ public class VehicleService extends BaseService<Vehicle, Long, VehicleRepository
     public PageResponse<VehicleResponse> getAvailableVehicles(Pageable pageable) {
         log.info("Fetching available vehicles");
         Page<Vehicle> vehicles = repository.findByStatusAndDeletedFalse(VehicleStatus.AVAILABLE, pageable);
+        return PageResponse.of(vehicles.map(vehicleMapper::toResponse));
+    }
+
+    public PageResponse<VehicleResponse> getAvailableVehiclesForPeriod(LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        if (startDate == null || endDate == null) {
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "startDate/endDate");
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "startDate must be before endDate");
+        }
+
+        log.info("Fetching available vehicles for period {} - {}", startDate, endDate);
+        Page<Vehicle> vehicles = repository.findAvailableForPeriod(VehicleStatus.AVAILABLE, startDate, endDate, pageable);
         return PageResponse.of(vehicles.map(vehicleMapper::toResponse));
     }
 

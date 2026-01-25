@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -17,6 +18,7 @@ import java.time.LocalDate;
     @UniqueConstraint(columnNames = {"category_id", "term_months"})
 })
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LeasingPlan extends BaseEntity {
 
@@ -63,15 +65,7 @@ public class LeasingPlan extends BaseEntity {
         return plan;
     }
 
-    public void updatePricing(Money monthlyBasePrice, int includedKmPerMonth) {
-        this.monthlyBasePrice = monthlyBasePrice;
-        this.includedKmPerMonth = includedKmPerMonth;
-    }
 
-    public void setValidityPeriod(LocalDate from, LocalDate to) {
-        this.validFrom = from;
-        this.validTo = to;
-    }
 
     public boolean isApplicable(LocalDate date) {
         if (!active) return false;
@@ -94,5 +88,10 @@ public class LeasingPlan extends BaseEntity {
 
     public void deactivate() {
         this.active = false;
+    }
+
+    public void setValidityPeriod(LocalDate validFrom, LocalDate validTo) {
+        this.validFrom = validFrom;
+        this.validTo = validTo;
     }
 }

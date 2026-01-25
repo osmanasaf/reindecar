@@ -3,6 +3,8 @@ package com.reindecar.service.customer;
 import com.reindecar.common.dto.PageResponse;
 import com.reindecar.common.exception.DuplicateEntityException;
 import com.reindecar.common.exception.EntityNotFoundException;
+import com.reindecar.common.exception.BusinessException;
+import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.common.service.BaseService;
 import com.reindecar.dto.customer.*;
 import com.reindecar.entity.customer.*;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.UUID;
 
@@ -58,6 +61,18 @@ public class CustomerService extends BaseService<Customer, Long, CustomerReposit
     public PageResponse<CustomerResponse> getBlacklistedCustomers(Pageable pageable) {
         log.info("Fetching blacklisted customers with pagination: {}", pageable);
         Page<Customer> customers = repository.findBlacklisted(pageable);
+        return PageResponse.of(customers.map(customerMapper::toResponse));
+    }
+
+    public PageResponse<CustomerResponse> searchCustomers(String query, Pageable pageable) {
+        String trimmed = query == null ? "" : query.trim();
+        if (!StringUtils.hasText(trimmed)) {
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, "q");
+        }
+
+        String likeQuery = "%" + trimmed.toLowerCase() + "%";
+        log.info("Searching customers with query: {}", trimmed);
+        Page<Customer> customers = repository.searchActiveCustomers(likeQuery, pageable);
         return PageResponse.of(customers.map(customerMapper::toResponse));
     }
 

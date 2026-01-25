@@ -36,4 +36,18 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     @Query("SELECT v FROM Vehicle v WHERE v.id = :id AND v.deleted = false")
     Optional<Vehicle> findByIdAndNotDeleted(Long id);
+
+    @Query("SELECT v FROM Vehicle v " +
+           "WHERE v.status = :status AND v.deleted = false AND " +
+           "NOT EXISTS (" +
+           "   SELECT r FROM com.reindecar.entity.rental.Rental r " +
+           "   WHERE r.vehicleId = v.id AND " +
+           "   r.status NOT IN ('CLOSED', 'CANCELLED') AND " +
+           "   (r.startDate <= :endDate AND r.endDate >= :startDate)" +
+           ")")
+    Page<Vehicle> findAvailableForPeriod(VehicleStatus status, java.time.LocalDate startDate, java.time.LocalDate endDate, Pageable pageable);
+
+    long countByDeletedFalse();
+
+    long countByStatusAndDeletedFalse(VehicleStatus status);
 }

@@ -42,4 +42,11 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     long countByRentalNumberPrefix(String prefix);
 
     List<Rental> findByRentalTypeAndStatus(com.reindecar.entity.pricing.RentalType rentalType, RentalStatus status);
+
+    long countByStatus(RentalStatus status);
+
+    @Query("SELECT r FROM Rental r WHERE r.status NOT IN ('CLOSED', 'CANCELLED') " +
+           "AND r.endDate BETWEEN :startDate AND :endDate " +
+           "ORDER BY r.endDate ASC")
+    List<Rental> findUpcomingReturns(LocalDate startDate, LocalDate endDate);
 }

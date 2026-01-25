@@ -1,6 +1,11 @@
 package com.reindecar.controller.pricing;
 
 import com.reindecar.dto.pricing.*;
+import com.reindecar.dto.pricing.UpdateLeasingPlanRequest; // Explicit import if * didn't cover recent addition (though * should cover it if in same package) -> actually * covers it if file exists. But explicit is safer if I am unsure about package. 
+// Actually UpdateLeasingPlanRequest is in com.reindecar.dto.pricing. So import com.reindecar.dto.pricing.*; covers it.
+// I will just rely on * unless it fails. 
+// Wait, I created UpdateLeasingPlanRequest in the SAME package. So `import com.reindecar.dto.pricing.*;` is sufficient.
+// However, I'll update it just to be sure I didn't break anything.
 import com.reindecar.service.pricing.LeasingPlanService;
 import com.reindecar.service.pricing.LeasingPriceCalculationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,7 +67,16 @@ public class LeasingController {
     @Operation(summary = "Update leasing plan")
     public ResponseEntity<LeasingPlanResponse> updatePlan(
             @PathVariable Long id,
-            @Valid @RequestBody CreateLeasingPlanRequest request) {
+            @Valid @RequestBody UpdateLeasingPlanRequest request) {
+        return ResponseEntity.ok(leasingPlanService.updatePlan(id, request));
+    }
+
+    @PatchMapping("/plans/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @Operation(summary = "Partially update leasing plan")
+    public ResponseEntity<LeasingPlanResponse> patchPlan(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateLeasingPlanRequest request) {
         return ResponseEntity.ok(leasingPlanService.updatePlan(id, request));
     }
 

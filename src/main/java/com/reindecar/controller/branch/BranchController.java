@@ -70,12 +70,15 @@ public class BranchController {
         return ApiResponse.success("Branch updated successfully", branch);
     }
 
-    @PatchMapping("/{id}/status")
-    @Operation(summary = "Toggle branch status", description = "Activates or deactivates a branch")
-    public ApiResponse<Void> toggleBranchStatus(@PathVariable Long id) {
-        branchService.toggleBranchStatus(id);
-        return ApiResponse.success("Branch status updated successfully", null);
+    @PatchMapping("/{id}")
+    @Operation(summary = "Partially update branch", description = "Updates an existing branch's information (partial)")
+    public ApiResponse<BranchResponse> patchBranch(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateBranchRequest request) {
+        BranchResponse branch = branchService.updateBranch(id, request);
+        return ApiResponse.success("Branch updated successfully", branch);
     }
+
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

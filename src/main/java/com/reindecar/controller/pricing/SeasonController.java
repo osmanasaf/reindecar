@@ -58,6 +58,15 @@ public class SeasonController {
         return ResponseEntity.ok(seasonService.update(id, request));
     }
 
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Partially update season")
+    public ResponseEntity<SeasonResponse> patch(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateSeasonRequest request) {
+        return ResponseEntity.ok(seasonService.update(id, request));
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete season")

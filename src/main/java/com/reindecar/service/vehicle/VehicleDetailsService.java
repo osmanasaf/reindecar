@@ -22,6 +22,7 @@ public class VehicleDetailsService {
 
     private final VehicleDetailsRepository detailsRepository;
     private final VehicleRepository vehicleRepository;
+    private final com.reindecar.mapper.vehicle.VehicleMapper vehicleMapper;
 
     private static final Money HGS_LOW_THRESHOLD = Money.of(BigDecimal.valueOf(100), Money.DEFAULT_CURRENCY);
     private static final int SERVICE_KM_THRESHOLD = 500;
@@ -56,7 +57,8 @@ public class VehicleDetailsService {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
             .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
 
-        details.updateHgsBalance(newBalance);
+        details.setHgsBalance(newBalance);
+        details.setHgsLastUpdated(java.time.Instant.now());
         detailsRepository.save(details);
         
         return toResponse(details, vehicle.getCurrentKm());
@@ -71,42 +73,7 @@ public class VehicleDetailsService {
     }
 
     private void updateFromRequest(VehicleDetails details, UpdateVehicleDetailsRequest request) {
-        if (request.hgsNumber() != null || request.hgsBalance() != null) {
-            Money balance = request.hgsBalance() != null 
-                ? Money.of(request.hgsBalance(), Money.DEFAULT_CURRENCY) 
-                : details.getHgsBalance();
-            details.updateHgsInfo(request.hgsNumber(), balance);
-        }
-        
-        if (request.kabisNumber() != null) {
-            details.updateKabisNumber(request.kabisNumber());
-        }
-        
-        if (request.mtvDate() != null) {
-            details.updateMtvDate(request.mtvDate());
-        }
-        
-        if (request.nextServiceDate() != null || request.nextServiceKm() != null) {
-            details.updateServiceInfo(request.nextServiceDate(), request.nextServiceKm());
-        }
-        
-        if (request.nextTireChangeDate() != null) {
-            details.updateTireChangeDate(request.nextTireChangeDate());
-        }
-        
-        if (request.creditEndDate() != null || request.remainingCreditAmount() != null) {
-            Money remaining = request.remainingCreditAmount() != null 
-                ? Money.of(request.remainingCreditAmount(), Money.DEFAULT_CURRENCY) 
-                : details.getRemainingCreditAmount();
-            details.updateFinanceInfo(request.creditEndDate(), remaining);
-        }
-        
-        if (request.purchaseDate() != null || request.purchasePrice() != null) {
-            Money price = request.purchasePrice() != null 
-                ? Money.of(request.purchasePrice(), Money.DEFAULT_CURRENCY) 
-                : details.getPurchasePrice();
-            details.updatePurchaseInfo(request.purchaseDate(), price);
-        }
+        vehicleMapper.updateDetails(details, request);
     }
 
     private VehicleDetailsResponse toResponse(VehicleDetails details, int currentKm) {

@@ -6,12 +6,14 @@ import com.reindecar.common.exception.DuplicateEntityException;
 import com.reindecar.common.exception.ErrorCode;
 import com.reindecar.entity.user.Role;
 import com.reindecar.entity.user.User;
+import com.reindecar.entity.user.UserSettings;
 import com.reindecar.dto.user.*;
 import com.reindecar.exception.user.InvalidCredentialsException;
 import com.reindecar.exception.user.UserNotFoundException;
 import com.reindecar.exception.user.WeakPasswordException;
 import com.reindecar.mapper.user.UserMapper;
 import com.reindecar.repository.user.UserRepository;
+import com.reindecar.repository.user.UserSettingsRepository;
 import com.reindecar.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ import java.util.regex.Pattern;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserSettingsRepository userSettingsRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -124,6 +127,28 @@ public class UserService {
         User user = userRepository.findByUsername(username.toLowerCase())
             .orElseThrow(() -> new UserNotFoundException(username));
         return userMapper.toResponse(user);
+    }
+
+    @Transactional
+    public UserResponse updateProfile(String username, UpdateProfileRequest request) {
+        log.info("Updating profile for user: {}", username);
+
+        User user = userRepository.findByUsername(username.toLowerCase())
+            .orElseThrow(() -> new UserNotFoundException(username));
+
+        if (!user.getEmail().equals(request.email().toLowerCase())) {
+            validateUniqueEmail(request.email());
+        }
+
+        user.updateInfo(
+            request.email(),
+            request.firstName(),
+            request.lastName(),
+            user.getBranchId()
+        );
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toResponse(updatedUser);
     }
 
     public PageResponse<UserResponse> getAllUsers(Pageable pageable) {
@@ -228,6 +253,43 @@ public class UserService {
     }
 
     @Transactional
+    public void changePassword(String username, ChangePasswordRequest request) {
+        log.info("Changing password for current user: {}", username);
+
+        User user = userRepository.findByUsername(username.toLowerCase())
+            .orElseThrow(() -> new UserNotFoundException(username));
+
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
+            throw new InvalidCredentialsException();
+        }
+
+        validatePasswordStrength(request.newPassword());
+
+        String newPasswordHash = passwordEncoder.encode(request.newPassword());
+        user.changePassword(newPasswordHash);
+        userRepository.save(user);
+    }
+
+    public UserSettingsResponse getUserSettings(String username) {
+        User user = userRepository.findByUsername(username.toLowerCase())
+            .orElseThrow(() -> new UserNotFoundException(username));
+
+        UserSettings settings = getOrCreateSettings(user.getId());
+        return toSettingsResponse(settings);
+    }
+
+    @Transactional
+    public UserSettingsResponse updateUserSettings(String username, UpdateUserSettingsRequest request) {
+        User user = userRepository.findByUsername(username.toLowerCase())
+            .orElseThrow(() -> new UserNotFoundException(username));
+
+        UserSettings settings = getOrCreateSettings(user.getId());
+        settings.update(request.emailNotifications(), request.smsNotifications(), request.pushNotifications());
+        UserSettings saved = userSettingsRepository.save(settings);
+        return toSettingsResponse(saved);
+    }
+
+    @Transactional
     public void deleteUser(Long id) {
         log.info("Deleting user with id: {}", id);
 
@@ -258,5 +320,18 @@ public class UserService {
         if (!PASSWORD_PATTERN.matcher(password).matches()) {
             throw new WeakPasswordException();
         }
+    }
+
+    private UserSettings getOrCreateSettings(Long userId) {
+        return userSettingsRepository.findByUserId(userId)
+            .orElseGet(() -> userSettingsRepository.save(UserSettings.createDefault(userId)));
+    }
+
+    private UserSettingsResponse toSettingsResponse(UserSettings settings) {
+        return new UserSettingsResponse(
+            settings.isEmailNotifications(),
+            settings.isSmsNotifications(),
+            settings.isPushNotifications()
+        );
     }
 }

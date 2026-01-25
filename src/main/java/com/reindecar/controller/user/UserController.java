@@ -59,6 +59,16 @@ public class UserController {
         return ApiResponse.success("User updated successfully", user);
     }
 
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Partially update user", description = "Partially updates an existing user's information (ADMIN only)")
+    public ApiResponse<UserResponse> patchUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateUserRequest request) {
+        UserResponse user = userService.updateUser(id, request);
+        return ApiResponse.success("User updated successfully", user);
+    }
+
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Toggle user status", description = "Activates or deactivates a user (ADMIN only)")
@@ -75,6 +85,40 @@ public class UserController {
             Authentication authentication) {
         userService.changePassword(id, request, authentication.getName());
         return ApiResponse.success("Password changed successfully", null);
+    }
+
+    @PutMapping("/profile")
+    @Operation(summary = "Update profile", description = "Updates current user's profile")
+    public ApiResponse<UserResponse> updateProfile(
+            @Valid @RequestBody UpdateProfileRequest request,
+            Authentication authentication) {
+        UserResponse user = userService.updateProfile(authentication.getName(), request);
+        return ApiResponse.success("Profile updated successfully", user);
+    }
+
+    @PutMapping("/password")
+    @Operation(summary = "Change current password", description = "Changes current user's password")
+    public ApiResponse<Void> changeCurrentPassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Authentication authentication) {
+        userService.changePassword(authentication.getName(), request);
+        return ApiResponse.success("Password changed successfully", null);
+    }
+
+    @GetMapping("/settings")
+    @Operation(summary = "Get notification settings", description = "Returns current user's notification settings")
+    public ApiResponse<UserSettingsResponse> getSettings(Authentication authentication) {
+        UserSettingsResponse settings = userService.getUserSettings(authentication.getName());
+        return ApiResponse.success(settings);
+    }
+
+    @PutMapping("/settings")
+    @Operation(summary = "Update notification settings", description = "Updates current user's notification settings")
+    public ApiResponse<UserSettingsResponse> updateSettings(
+            @Valid @RequestBody UpdateUserSettingsRequest request,
+            Authentication authentication) {
+        UserSettingsResponse settings = userService.updateUserSettings(authentication.getName(), request);
+        return ApiResponse.success("Settings updated successfully", settings);
     }
 
     @DeleteMapping("/{id}")

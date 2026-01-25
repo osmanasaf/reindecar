@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "vehicle_details")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VehicleDetails extends BaseEntity {
 
@@ -84,44 +86,7 @@ public class VehicleDetails extends BaseEntity {
         return details;
     }
 
-    public void updateHgsInfo(String hgsNumber, Money balance) {
-        this.hgsNumber = hgsNumber;
-        this.hgsBalance = balance;
-        this.hgsLastUpdated = Instant.now();
-    }
 
-    public void updateHgsBalance(Money newBalance) {
-        this.hgsBalance = newBalance;
-        this.hgsLastUpdated = Instant.now();
-    }
-
-    public void updateKabisNumber(String kabisNumber) {
-        this.kabisNumber = kabisNumber;
-    }
-
-    public void updateMtvDate(LocalDate mtvDate) {
-        this.mtvDate = mtvDate;
-    }
-
-    public void updateServiceInfo(LocalDate nextServiceDate, Integer nextServiceKm) {
-        this.lastServiceDate = this.nextServiceDate;
-        this.nextServiceDate = nextServiceDate;
-        this.nextServiceKm = nextServiceKm;
-    }
-
-    public void updateTireChangeDate(LocalDate nextTireChangeDate) {
-        this.nextTireChangeDate = nextTireChangeDate;
-    }
-
-    public void updateFinanceInfo(LocalDate creditEndDate, Money remainingAmount) {
-        this.creditEndDate = creditEndDate;
-        this.remainingCreditAmount = remainingAmount;
-    }
-
-    public void updatePurchaseInfo(LocalDate purchaseDate, Money purchasePrice) {
-        this.purchaseDate = purchaseDate;
-        this.purchasePrice = purchasePrice;
-    }
 
     public boolean isHgsBalanceLow(Money threshold) {
         if (hgsBalance == null || threshold == null) {

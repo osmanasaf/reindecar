@@ -18,6 +18,7 @@ public interface RentalMapper {
     @Mapping(target = "currency", expression = "java(rental.getDailyPrice().getCurrency())")
     @Mapping(target = "isOverdue", expression = "java(rental.isOverdue())")
     @Mapping(target = "overdueDays", expression = "java(rental.getOverdueDays())")
+    @Mapping(target = "driverId", ignore = true)
     RentalResponse toResponse(Rental rental);
 
     default java.math.BigDecimal toAmount(com.reindecar.common.valueobject.Money money) {

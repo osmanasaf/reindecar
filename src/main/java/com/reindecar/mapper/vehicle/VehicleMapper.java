@@ -4,10 +4,12 @@ import com.reindecar.common.valueobject.Money;
 import com.reindecar.dto.vehicle.CreateVehicleRequest;
 import com.reindecar.dto.vehicle.VehicleResponse;
 import com.reindecar.entity.vehicle.Vehicle;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.reindecar.dto.vehicle.UpdateVehicleDetailsRequest;
+import com.reindecar.dto.vehicle.VehicleDetailsResponse;
+import com.reindecar.entity.vehicle.VehicleDetails;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface VehicleMapper {
 
     @Mapping(target = "categoryName", ignore = true)
@@ -39,6 +41,19 @@ public interface VehicleMapper {
             request.notes()
         );
     }
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "vehicleId", ignore = true)
+    @Mapping(target = "hgsLastUpdated", ignore = true) // Updated manually or via entity listener if changed
+    @Mapping(target = "hgsBalance", source = "hgsBalance")
+    @Mapping(target = "remainingCreditAmount", source = "remainingCreditAmount")
+    @Mapping(target = "purchasePrice", source = "purchasePrice")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "registrationDate", ignore = true)
+    @Mapping(target = "lastServiceDate", ignore = true)
+    void updateDetails(@MappingTarget VehicleDetails details, UpdateVehicleDetailsRequest request);
 
     default Money toMoney(java.math.BigDecimal amount) {
         return amount != null ? Money.of(amount, Money.DEFAULT_CURRENCY) : null;

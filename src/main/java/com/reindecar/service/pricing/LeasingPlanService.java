@@ -24,6 +24,7 @@ public class LeasingPlanService {
 
     private final LeasingPlanRepository leasingPlanRepository;
     private final VehicleCategoryRepository vehicleCategoryRepository;
+    private final com.reindecar.mapper.pricing.LeasingPlanMapper leasingPlanMapper;
 
     public List<LeasingPlanResponse> getAllPlans() {
         return leasingPlanRepository.findByActiveTrue().stream()
@@ -72,17 +73,14 @@ public class LeasingPlanService {
     }
 
     @Transactional
-    public LeasingPlanResponse updatePlan(Long id, CreateLeasingPlanRequest request) {
+    public LeasingPlanResponse updatePlan(Long id, com.reindecar.dto.pricing.UpdateLeasingPlanRequest request) {
         log.info("Updating leasing plan: {}", id);
 
         LeasingPlan plan = leasingPlanRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("LeasingPlan", id));
 
-        String currency = request.currency() != null ? request.currency() : Money.DEFAULT_CURRENCY;
-        Money monthlyPrice = Money.of(request.monthlyBasePrice(), currency);
-
-        plan.updatePricing(monthlyPrice, request.includedKmPerMonth());
-        plan.setValidityPeriod(request.validFrom(), request.validTo());
+        leasingPlanMapper.updateEntity(plan, request);
+        // Note: manual update of currency/price IF specialized logic needed, but mapper handles it via updateEntity logic
 
         LeasingPlan saved = leasingPlanRepository.save(plan);
         return toResponse(saved);

@@ -45,3 +45,8 @@ compile_log.txt
 compile_output.txt
 *_output.md
 *_output.json
+/.cursor/
+/.cursorrules
+/agents/
+/package.json
+/package-lock.json

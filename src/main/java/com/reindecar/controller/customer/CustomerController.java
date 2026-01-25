@@ -50,6 +50,15 @@ public class CustomerController {
         return ApiResponse.success(customers);
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Search customers", description = "Searches customers by name, company, contact, or identity info")
+    public ApiResponse<PageResponse<CustomerResponse>> searchCustomers(
+            @RequestParam("q") String query,
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        PageResponse<CustomerResponse> customers = customerService.searchCustomers(query, pageable);
+        return ApiResponse.success(customers);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get customer by ID", description = "Returns detailed information about a specific customer")
     public ApiResponse<CustomerResponse> getCustomerById(@PathVariable Long id) {

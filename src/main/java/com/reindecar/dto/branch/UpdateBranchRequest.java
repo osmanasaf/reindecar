@@ -5,11 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UpdateBranchRequest(
-    @NotBlank(message = "Branch name is required")
     @Size(max = 100, message = "Branch name must not exceed 100 characters")
     String name,
 
-    @NotBlank(message = "City is required")
     @Size(max = 50, message = "City must not exceed 50 characters")
     String city,
 

@@ -20,6 +20,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/vehicles")
@@ -44,6 +47,16 @@ public class VehicleController {
     public ApiResponse<PageResponse<VehicleResponse>> getAvailableVehicles(
             @PageableDefault(size = 20, sort = "brand") Pageable pageable) {
         PageResponse<VehicleResponse> vehicles = vehicleService.getAvailableVehicles(pageable);
+        return ApiResponse.success(vehicles);
+    }
+
+    @GetMapping("/available-for-period")
+    @Operation(summary = "Get available vehicles for period", description = "Returns vehicles available for the given date range")
+    public ApiResponse<PageResponse<VehicleResponse>> getAvailableVehiclesForPeriod(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @PageableDefault(size = 20, sort = "brand") Pageable pageable) {
+        PageResponse<VehicleResponse> vehicles = vehicleService.getAvailableVehiclesForPeriod(startDate, endDate, pageable);
         return ApiResponse.success(vehicles);
     }
 
@@ -127,6 +140,14 @@ public class VehicleController {
     @PutMapping("/{id}/details")
     @Operation(summary = "Update vehicle details", description = "Updates HGS, KABIS, service, finance info")
     public ApiResponse<VehicleDetailsResponse> updateVehicleDetails(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateVehicleDetailsRequest request) {
+        VehicleDetailsResponse details = vehicleDetailsService.updateDetails(id, request);
+        return ApiResponse.success("Vehicle details updated successfully", details);
+    }
+    @PatchMapping("/{id}/details")
+    @Operation(summary = "Partially update vehicle details", description = "Partially updates HGS, KABIS, service, finance info")
+    public ApiResponse<VehicleDetailsResponse> patchVehicleDetails(
             @PathVariable Long id,
             @Valid @RequestBody UpdateVehicleDetailsRequest request) {
         VehicleDetailsResponse details = vehicleDetailsService.updateDetails(id, request);
