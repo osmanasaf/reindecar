@@ -32,11 +32,20 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
            "((r.startDate <= :endDate AND r.endDate >= :startDate))")
     List<Rental> findOverlappingRentals(Long vehicleId, LocalDate startDate, LocalDate endDate);
 
-    @Query("SELECT r FROM Rental r WHERE r.customerId = :customerId")
+    @Query("SELECT r FROM Rental r WHERE r.customerId = :customerId ORDER BY r.startDate DESC")
     Page<Rental> findByCustomerId(Long customerId, Pageable pageable);
 
-    @Query("SELECT r FROM Rental r WHERE r.vehicleId = :vehicleId")
+    @Query("SELECT r FROM Rental r WHERE r.customerId = :customerId AND r.status IN ('ACTIVE', 'OVERDUE') ORDER BY r.startDate DESC")
+    List<Rental> findActiveByCustomerId(Long customerId);
+
+    @Query("SELECT DISTINCT r.vehicleId FROM Rental r WHERE r.customerId = :customerId")
+    List<Long> findVehicleIdsByCustomerId(Long customerId);
+
+    @Query("SELECT r FROM Rental r WHERE r.vehicleId = :vehicleId ORDER BY r.startDate DESC")
     Page<Rental> findByVehicleId(Long vehicleId, Pageable pageable);
+
+    @Query("SELECT r FROM Rental r WHERE r.vehicleId = :vehicleId ORDER BY r.startDate DESC")
+    List<Rental> findAllByVehicleId(Long vehicleId);
 
     @Query("SELECT COUNT(r) FROM Rental r WHERE r.rentalNumber LIKE :prefix%")
     long countByRentalNumberPrefix(String prefix);

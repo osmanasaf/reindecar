@@ -21,6 +21,8 @@ public final class ValidationMessages {
     public static final String DRIVER_LICENSE_EXPIRED = "Sürücü ehliyetinin süresi dolmuş";
     public static final String DRIVER_ALREADY_ADDED = "Sürücü bu kiralamaya zaten eklenmiş";
     public static final String DRIVER_UNKNOWN = "Bilinmeyen Sürücü";
+    public static final String DRIVER_DUPLICATE_IN_REQUEST = "Sürücü listesinde tekrar eden kayıt var";
+    public static final String RENTAL_PRIMARY_DRIVER_NOT_IN_LIST = "Ana sürücü listede olmalıdır";
 
     public static final String RENTAL_CANNOT_MODIFY_STATUS = "Bu durumdaki kiralama için sürücü değiştirilemez: %s";
     public static final String RENTAL_DATE_INVALID = "Başlangıç tarihi bitiş tarihinden önce olmalıdır";

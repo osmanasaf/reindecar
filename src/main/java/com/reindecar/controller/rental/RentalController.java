@@ -3,6 +3,7 @@ package com.reindecar.controller.rental;
 import com.reindecar.common.dto.ApiResponse;
 import com.reindecar.common.dto.PageResponse;
 import com.reindecar.dto.rental.*;
+import com.reindecar.dto.vehicle.VehicleResponse;
 import com.reindecar.service.rental.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +15,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/rentals")
@@ -103,5 +106,28 @@ public class RentalController {
     public ApiResponse<Void> cancelRental(@PathVariable Long id) {
         rentalService.cancelRental(id);
         return ApiResponse.success("Rental cancelled successfully", null);
+    }
+
+    @GetMapping("/customer/{customerId}")
+    @Operation(summary = "Müşteri kiralamaları", description = "Belirtilen müşterinin tüm kiralamalarını döner")
+    public ApiResponse<PageResponse<RentalResponse>> getRentalsByCustomer(
+            @PathVariable Long customerId,
+            @PageableDefault(size = 20, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        PageResponse<RentalResponse> rentals = rentalService.getRentalsByCustomerId(customerId, pageable);
+        return ApiResponse.success(rentals);
+    }
+
+    @GetMapping("/customer/{customerId}/active")
+    @Operation(summary = "Müşteri aktif kiralamaları", description = "Belirtilen müşterinin aktif kiralamalarını döner")
+    public ApiResponse<List<RentalResponse>> getActiveRentalsByCustomer(@PathVariable Long customerId) {
+        List<RentalResponse> rentals = rentalService.getActiveRentalsByCustomerId(customerId);
+        return ApiResponse.success(rentals);
+    }
+
+    @GetMapping("/customer/{customerId}/vehicles")
+    @Operation(summary = "Müşteriye verilen araçlar", description = "Müşteriye daha önce kiralanan araçları döner")
+    public ApiResponse<List<VehicleResponse>> getVehiclesByCustomer(@PathVariable Long customerId) {
+        List<VehicleResponse> vehicles = rentalService.getVehiclesByCustomerId(customerId);
+        return ApiResponse.success(vehicles);
     }
 }

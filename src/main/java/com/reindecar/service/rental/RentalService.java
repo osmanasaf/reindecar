@@ -4,12 +4,14 @@ import com.reindecar.common.constant.DomainConstants;
 import com.reindecar.common.dto.PageResponse;
 import com.reindecar.common.exception.EntityNotFoundException;
 import com.reindecar.dto.rental.*;
+import com.reindecar.dto.vehicle.VehicleResponse;
 import com.reindecar.entity.rental.Rental;
 import com.reindecar.entity.rental.RentalStatus;
 import com.reindecar.entity.vehicle.Vehicle;
 import com.reindecar.entity.vehicle.VehicleStatus;
 import com.reindecar.exception.rental.RentalNotFoundException;
 import com.reindecar.mapper.rental.RentalMapper;
+import com.reindecar.mapper.vehicle.VehicleMapper;
 import com.reindecar.repository.rental.RentalRepository;
 import com.reindecar.repository.vehicle.VehicleRepository;
 import com.reindecar.service.vehicle.VehicleStatusService;
@@ -20,6 +22,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -28,6 +32,7 @@ public class RentalService {
 
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
+    private final VehicleMapper vehicleMapper;
     private final CreateRentalUseCase createRentalUseCase;
     private final VehicleRepository vehicleRepository;
     private final VehicleStatusService vehicleStatusService;
@@ -169,5 +174,32 @@ public class RentalService {
     private Vehicle findVehicleByIdOrThrow(Long vehicleId) {
         return vehicleRepository.findById(vehicleId)
             .orElseThrow(() -> new EntityNotFoundException(ENTITY_VEHICLE, vehicleId));
+    }
+
+    public PageResponse<RentalResponse> getRentalsByCustomerId(Long customerId, Pageable pageable) {
+        log.info("Fetching rentals for customer: {}", customerId);
+        Page<Rental> rentals = rentalRepository.findByCustomerId(customerId, pageable);
+        return PageResponse.of(rentals.map(rentalMapper::toResponse));
+    }
+
+    public List<RentalResponse> getActiveRentalsByCustomerId(Long customerId) {
+        log.info("Fetching active rentals for customer: {}", customerId);
+        List<Rental> rentals = rentalRepository.findActiveByCustomerId(customerId);
+        return rentals.stream().map(rentalMapper::toResponse).toList();
+    }
+
+    public List<VehicleResponse> getVehiclesByCustomerId(Long customerId) {
+        log.info("Fetching vehicles for customer: {}", customerId);
+        List<Long> vehicleIds = rentalRepository.findVehicleIdsByCustomerId(customerId);
+        return vehicleIds.stream()
+            .map(vehicleRepository::findById)
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+            .map(vehicleMapper::toResponse)
+            .toList();
+    }
+
+    public List<Rental> getRentalsByVehicleId(Long vehicleId) {
+        return rentalRepository.findAllByVehicleId(vehicleId);
     }
 }

@@ -7,9 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MaintenanceRecordRepository extends JpaRepository<MaintenanceRecord, Long> {
 
     @Query("SELECT m FROM MaintenanceRecord m WHERE m.vehicleId = :vehicleId ORDER BY m.maintenanceDate DESC")
     Page<MaintenanceRecord> findByVehicleIdOrderByMaintenanceDateDesc(Long vehicleId, Pageable pageable);
+
+    @Query("SELECT m FROM MaintenanceRecord m WHERE m.vehicleId = :vehicleId ORDER BY m.maintenanceDate DESC")
+    List<MaintenanceRecord> findAllByVehicleId(Long vehicleId);
 }

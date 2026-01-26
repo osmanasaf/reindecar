@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -25,8 +24,17 @@ public class DamageReport extends BaseEntity {
     @Column(nullable = false)
     private LocalDate reportDate;
 
-    @Column(nullable = false, length = 200)
-    private String damageType;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private DamageType damageType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private DamageLocation location;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private DamageSeverity severity;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
@@ -42,13 +50,25 @@ public class DamageReport extends BaseEntity {
     private String reportedBy;
 
     @Column(nullable = false)
-    private Instant createdAt;
+    private boolean repaired;
+
+    @Column
+    private LocalDate repairedDate;
+
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "amount", column = @Column(name = "repair_cost_amount")),
+        @AttributeOverride(name = "currency", column = @Column(name = "repair_cost_currency"))
+    })
+    private Money repairCost;
 
     public static DamageReport create(
             Long vehicleId,
             Long rentalId,
             LocalDate reportDate,
-            String damageType,
+            DamageType damageType,
+            DamageLocation location,
+            DamageSeverity severity,
             String description,
             Money estimatedCost,
             String reportedBy) {
@@ -58,10 +78,38 @@ public class DamageReport extends BaseEntity {
         report.rentalId = rentalId;
         report.reportDate = reportDate;
         report.damageType = damageType;
+        report.location = location;
+        report.severity = severity;
         report.description = description;
         report.estimatedCost = estimatedCost;
         report.reportedBy = reportedBy;
-        report.createdAt = Instant.now();
+        report.repaired = false;
         return report;
+    }
+
+    public void update(
+            DamageType damageType,
+            DamageLocation location,
+            DamageSeverity severity,
+            String description,
+            Money estimatedCost) {
+        
+        this.damageType = damageType;
+        this.location = location;
+        this.severity = severity;
+        this.description = description;
+        this.estimatedCost = estimatedCost;
+    }
+
+    public void markAsRepaired(LocalDate repairedDate, Money repairCost) {
+        this.repaired = true;
+        this.repairedDate = repairedDate;
+        this.repairCost = repairCost;
+    }
+
+    public void undoRepair() {
+        this.repaired = false;
+        this.repairedDate = null;
+        this.repairCost = null;
     }
 }

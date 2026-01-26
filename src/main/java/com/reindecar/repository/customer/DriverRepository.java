@@ -15,6 +15,14 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     @Query("SELECT d FROM Driver d WHERE d.customerId = :customerId")
     Page<Driver> findByCustomerId(Long customerId, Pageable pageable);
 
+    Page<Driver> findByActiveTrue(Pageable pageable);
+
+    Page<Driver> findByActiveFalse(Pageable pageable);
+
+    Page<Driver> findByCustomerIdAndActiveTrue(Long customerId, Pageable pageable);
+
+    Page<Driver> findByCustomerIdAndActiveFalse(Long customerId, Pageable pageable);
+
     @Query("SELECT d FROM Driver d WHERE d.id = :id AND d.customerId = :customerId")
     Optional<Driver> findByIdAndCustomerId(Long id, Long customerId);
 

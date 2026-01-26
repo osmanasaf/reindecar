@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Driver extends BaseEntity {
 
-    @Column(nullable = false, name = "customer_id")
+    @Column(name = "customer_id")
     private Long customerId;
 
     @ValidTurkishNationalId

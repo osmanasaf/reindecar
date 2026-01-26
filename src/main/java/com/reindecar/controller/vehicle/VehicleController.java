@@ -2,13 +2,21 @@ package com.reindecar.controller.vehicle;
 
 import com.reindecar.common.dto.ApiResponse;
 import com.reindecar.common.dto.PageResponse;
+import com.reindecar.dto.damage.VehicleDamageMapResponse;
+import com.reindecar.dto.maintenance.VehicleMaintenanceMapResponse;
 import com.reindecar.dto.vehicle.CreateVehicleRequest;
 import com.reindecar.dto.vehicle.UpdateVehicleDetailsRequest;
 import com.reindecar.dto.vehicle.UpdateVehicleStatusRequest;
+import com.reindecar.dto.vehicle.VehicleCombinedMapResponse;
 import com.reindecar.dto.vehicle.VehicleDetailsResponse;
+import com.reindecar.dto.vehicle.VehicleHistoryResponse;
 import com.reindecar.dto.vehicle.VehicleResponse;
 import com.reindecar.dto.vehicle.VehicleStatusHistoryResponse;
+import com.reindecar.service.damage.DamageService;
+import com.reindecar.service.maintenance.MaintenanceService;
+import com.reindecar.service.vehicle.VehicleCombinedMapService;
 import com.reindecar.service.vehicle.VehicleDetailsService;
+import com.reindecar.service.vehicle.VehicleHistoryService;
 import com.reindecar.service.vehicle.VehicleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +40,10 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
     private final VehicleDetailsService vehicleDetailsService;
+    private final VehicleHistoryService vehicleHistoryService;
+    private final VehicleCombinedMapService vehicleCombinedMapService;
+    private final DamageService damageService;
+    private final MaintenanceService maintenanceService;
 
 
     @GetMapping
@@ -152,6 +164,34 @@ public class VehicleController {
             @Valid @RequestBody UpdateVehicleDetailsRequest request) {
         VehicleDetailsResponse details = vehicleDetailsService.updateDetails(id, request);
         return ApiResponse.success("Vehicle details updated successfully", details);
+    }
+
+    @GetMapping("/{id}/full-history")
+    @Operation(summary = "Araç tam geçmişi", description = "Kiralama, hasar, bakım ve durum değişikliği geçmişini döner")
+    public ApiResponse<VehicleHistoryResponse> getVehicleFullHistory(@PathVariable Long id) {
+        VehicleHistoryResponse history = vehicleHistoryService.getVehicleHistory(id);
+        return ApiResponse.success(history);
+    }
+
+    @GetMapping("/{id}/damage-map")
+    @Operation(summary = "Araç hasar haritası", description = "Araç üzerindeki aktif hasarların zone bazlı haritasını döner")
+    public ApiResponse<VehicleDamageMapResponse> getVehicleDamageMap(@PathVariable Long id) {
+        VehicleDamageMapResponse map = damageService.getVehicleDamageMap(id);
+        return ApiResponse.success(map);
+    }
+
+    @GetMapping("/{id}/maintenance-map")
+    @Operation(summary = "Araç bakım haritası", description = "Araç üzerindeki bakımların zone bazlı haritasını döner")
+    public ApiResponse<VehicleMaintenanceMapResponse> getVehicleMaintenanceMap(@PathVariable Long id) {
+        VehicleMaintenanceMapResponse map = maintenanceService.getVehicleMaintenanceMap(id);
+        return ApiResponse.success(map);
+    }
+
+    @GetMapping("/{id}/combined-map")
+    @Operation(summary = "Araç birleşik haritası", description = "Hasar ve bakım bilgilerini birleştiren zone bazlı harita")
+    public ApiResponse<VehicleCombinedMapResponse> getVehicleCombinedMap(@PathVariable Long id) {
+        VehicleCombinedMapResponse map = vehicleCombinedMapService.getCombinedMap(id);
+        return ApiResponse.success(map);
     }
 }
 
