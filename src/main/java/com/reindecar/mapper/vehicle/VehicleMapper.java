@@ -15,6 +15,8 @@ public interface VehicleMapper {
     @Mapping(target = "categoryName", ignore = true)
     @Mapping(target = "branchName", ignore = true)
     @Mapping(target = "dailyPrice", expression = "java(toAmount(vehicle.getDailyPrice()))")
+    @Mapping(target = "weeklyPrice", expression = "java(toAmount(vehicle.getWeeklyPrice()))")
+    @Mapping(target = "monthlyPrice", expression = "java(toAmount(vehicle.getMonthlyPrice()))")
     @Mapping(target = "isInsuranceExpiringSoon", expression = "java(vehicle.isInsuranceExpiringSoon())")
     @Mapping(target = "isInspectionExpiringSoon", expression = "java(vehicle.isInspectionExpiringSoon())")
     VehicleResponse toResponse(Vehicle vehicle);
@@ -38,6 +40,8 @@ public interface VehicleMapper {
             request.inspectionExpiryDate(),
             request.registrationDate(),
             toMoney(request.dailyPrice()),
+            toMoney(request.weeklyPrice()),
+            toMoney(request.monthlyPrice()),
             request.notes()
         );
     }

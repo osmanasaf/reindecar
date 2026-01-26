@@ -102,6 +102,20 @@ public class Vehicle extends AuditableEntity {
     })
     private Money dailyPrice;
 
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "amount", column = @Column(name = "weekly_price_amount")),
+        @AttributeOverride(name = "currency", column = @Column(name = "weekly_price_currency"))
+    })
+    private Money weeklyPrice;
+
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "amount", column = @Column(name = "monthly_price_amount")),
+        @AttributeOverride(name = "currency", column = @Column(name = "monthly_price_currency"))
+    })
+    private Money monthlyPrice;
+
     @Size(max = 1000)
     @Column(length = 1000)
     private String notes;
@@ -128,6 +142,8 @@ public class Vehicle extends AuditableEntity {
             LocalDate inspectionExpiryDate,
             LocalDate registrationDate,
             Money dailyPrice,
+            Money weeklyPrice,
+            Money monthlyPrice,
             String notes) {
         
         if (year < 1900 || year > LocalDate.now().getYear() + 1) {
@@ -161,6 +177,8 @@ public class Vehicle extends AuditableEntity {
         vehicle.inspectionExpiryDate = inspectionExpiryDate;
         vehicle.registrationDate = registrationDate;
         vehicle.dailyPrice = dailyPrice;
+        vehicle.weeklyPrice = weeklyPrice;
+        vehicle.monthlyPrice = monthlyPrice;
         vehicle.notes = notes;
         return vehicle;
     }
@@ -175,6 +193,8 @@ public class Vehicle extends AuditableEntity {
             LocalDate insuranceExpiryDate,
             LocalDate inspectionExpiryDate,
             Money dailyPrice,
+            Money weeklyPrice,
+            Money monthlyPrice,
             String notes) {
         
         this.brand = brand;
@@ -186,6 +206,8 @@ public class Vehicle extends AuditableEntity {
         this.insuranceExpiryDate = insuranceExpiryDate;
         this.inspectionExpiryDate = inspectionExpiryDate;
         this.dailyPrice = dailyPrice;
+        this.weeklyPrice = weeklyPrice;
+        this.monthlyPrice = monthlyPrice;
         this.notes = notes;
     }
 
@@ -224,6 +246,24 @@ public class Vehicle extends AuditableEntity {
 
     public Money getEffectiveDailyPrice(Money categoryDefaultPrice) {
         return dailyPrice != null ? dailyPrice : categoryDefaultPrice;
+    }
+
+    public Money getDailyPrice() {
+        return dailyPrice;
+    }
+
+    public Money getWeeklyPrice() {
+        return weeklyPrice;
+    }
+
+    public Money getMonthlyPrice() {
+        return monthlyPrice;
+    }
+
+    public void updatePricing(Money dailyPrice, Money weeklyPrice, Money monthlyPrice) {
+        this.dailyPrice = dailyPrice;
+        this.weeklyPrice = weeklyPrice;
+        this.monthlyPrice = monthlyPrice;
     }
 
     public String getDisplayName() {

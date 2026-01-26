@@ -29,8 +29,12 @@ public class StateMachine<S> {
     }
 
     public boolean canTransition(S from, S to) {
+        // Önce transition handler'ı kontrol et
+        if (transitionHandler.canTransition(from, to)) {
+            return true;
+        }
+        // Fallback: internal transitions map
         Set<S> allowedStates = transitions.get(from);
-        return allowedStates != null && allowedStates.contains(to) 
-            && transitionHandler.canTransition(from, to);
+        return allowedStates != null && allowedStates.contains(to);
     }
 }

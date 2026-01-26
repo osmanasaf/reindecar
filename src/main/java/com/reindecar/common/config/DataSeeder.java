@@ -190,6 +190,10 @@ public class DataSeeder {
                 VehicleCategory welcome = vehicleCategoryRepository.findByCode("WELCOME").orElse(null);
 
                 if (istanbul != null && pool != null) {
+                    Money dailyPrice = Money.tl(1500);
+                    Money weeklyPrice = Money.tl(9000);
+                    Money monthlyPrice = Money.tl(30000);
+                    
                     Vehicle egea = Vehicle.create(
                         "34ABC123",
                         "TR123456789012345",
@@ -207,13 +211,19 @@ public class DataSeeder {
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2023, 1, 15),
-                        pool.getDefaultDailyPrice(),
+                        dailyPrice,
+                        weeklyPrice,
+                        monthlyPrice,
                         "Havuz aracı - genel kullanım"
                     );
                     vehicleRepository.save(egea);
                 }
 
                 if (istanbul != null && executive != null) {
+                    Money dailyPrice = Money.tl(3000);
+                    Money weeklyPrice = Money.tl(18000);
+                    Money monthlyPrice = Money.tl(60000);
+                    
                     Vehicle passat = Vehicle.create(
                         "34DEF456",
                         "TR123456789012346",
@@ -231,14 +241,20 @@ public class DataSeeder {
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2023, 3, 20),
-                        executive.getDefaultDailyPrice(),
+                        dailyPrice,
+                        weeklyPrice,
+                        monthlyPrice,
                         "Yönetici aracı"
                     );
                     vehicleRepository.save(passat);
                 }
 
                 if (ankara != null && dedicated != null) {
-                    Vehicle clio = Vehicle.create(
+                    Money dailyPrice = Money.tl(2500);
+                    Money weeklyPrice = Money.tl(15000);
+                    Money monthlyPrice = Money.tl(50000);
+                    
+                    Vehicle megane = Vehicle.create(
                         "06GHI789",
                         "TR123456789012347",
                         "Renault",
@@ -255,13 +271,19 @@ public class DataSeeder {
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2024, 1, 10),
-                        dedicated.getDefaultDailyPrice(),
+                        dailyPrice,
+                        weeklyPrice,
+                        monthlyPrice,
                         "Özel tahsis - Müşteri XYZ"
                     );
-                    vehicleRepository.save(clio);
+                    vehicleRepository.save(megane);
                 }
 
                 if (izmir != null && welcome != null) {
+                    Money dailyPrice = Money.tl(2000);
+                    Money weeklyPrice = Money.tl(12000);
+                    Money monthlyPrice = Money.tl(40000);
+                    
                     Vehicle xc90 = Vehicle.create(
                         "35JKL012",
                         "TR123456789012348",
@@ -279,13 +301,19 @@ public class DataSeeder {
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2023, 6, 15),
-                        welcome.getDefaultDailyPrice(),
+                        dailyPrice,
+                        weeklyPrice,
+                        monthlyPrice,
                         "Havalimanı karşılama"
                     );
                     vehicleRepository.save(xc90);
                 }
 
                 if (istanbul != null && protocol != null) {
+                    Money dailyPrice = Money.tl(5000);
+                    Money weeklyPrice = Money.tl(30000);
+                    Money monthlyPrice = Money.tl(100000);
+                    
                     Vehicle bmw5 = Vehicle.create(
                         "34MNO345",
                         "TR123456789012349",
@@ -303,13 +331,19 @@ public class DataSeeder {
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2024, 2, 1),
-                        protocol.getDefaultDailyPrice(),
+                        dailyPrice,
+                        weeklyPrice,
+                        monthlyPrice,
                         "Makam aracı - Genel Müdür"
                     );
                     vehicleRepository.save(bmw5);
                 }
 
-                 if (ankara != null && protocol != null) {
+                if (ankara != null && protocol != null) {
+                    Money dailyPrice = Money.tl(7000);
+                    Money weeklyPrice = Money.tl(42000);
+                    Money monthlyPrice = Money.tl(140000);
+                    
                     Vehicle mercedesS = Vehicle.create(
                         "06PQR678",
                         "TR123456789012350",
@@ -327,7 +361,9 @@ public class DataSeeder {
                         LocalDate.now().plusYears(1),
                         LocalDate.now().plusYears(2),
                         LocalDate.of(2024, 5, 10),
-                        protocol.getDefaultDailyPrice(),
+                        dailyPrice,
+                        weeklyPrice,
+                        monthlyPrice,
                         "Makam aracı - CEO"
                     );
                     vehicleRepository.save(mercedesS);

@@ -8,11 +8,9 @@ import com.reindecar.dto.pricing.CalculatePriceRequest;
 import com.reindecar.dto.pricing.PriceCalculationResponse;
 import com.reindecar.dto.rental.CreateRentalRequest;
 import com.reindecar.entity.customer.Customer;
-import com.reindecar.entity.pricing.RentalType;
 import com.reindecar.entity.rental.Rental;
 import com.reindecar.entity.rental.RentalDriver;
 import com.reindecar.entity.vehicle.Vehicle;
-import com.reindecar.entity.vehicle.VehicleStatus;
 import com.reindecar.exception.customer.CustomerBlacklistedException;
 import com.reindecar.exception.rental.RentalOverlapException;
 import com.reindecar.repository.customer.CustomerRepository;
@@ -20,7 +18,6 @@ import com.reindecar.repository.rental.RentalDriverRepository;
 import com.reindecar.repository.rental.RentalRepository;
 import com.reindecar.repository.vehicle.VehicleRepository;
 import com.reindecar.service.pricing.PriceCalculationService;
-import com.reindecar.service.vehicle.VehicleStatusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,16 +37,13 @@ public class CreateRentalUseCase {
     private final CustomerRepository customerRepository;
     private final RentalDriverRepository rentalDriverRepository;
     private final PriceCalculationService priceCalculationService;
-    private final VehicleStatusService vehicleStatusService;
 
     @Transactional
     public Rental execute(CreateRentalRequest request, String createdBy) {
         log.info("Creating rental for vehicle: {}, customer: {}", request.vehicleId(), request.customerId());
 
         validateCustomerNotBlacklisted(request.customerId());
-        
-        Vehicle vehicle = validateVehicleAvailable(request.vehicleId());
-        
+        validateVehicleAvailable(request.vehicleId());
         validateNoOverlap(request.vehicleId(), request.startDate(), request.endDate());
 
         PriceCalculationResponse priceCalc = calculatePrice(request);
@@ -61,6 +55,9 @@ public class CreateRentalUseCase {
         Money discountAmount = request.discountAmount() != null 
             ? Money.of(request.discountAmount(), priceCalc.currency())
             : Money.zero(priceCalc.currency());
+        Money customExtraKmPrice = request.customExtraKmPrice() != null
+            ? Money.of(request.customExtraKmPrice(), priceCalc.currency())
+            : null;
 
         Rental rental = Rental.create(
             rentalNumber,
@@ -75,6 +72,8 @@ public class CreateRentalUseCase {
             request.startDate(),
             request.endDate(),
             request.kmPackageId(),
+            request.customIncludedKm(),
+            customExtraKmPrice,
             dailyPrice,
             totalPrice,
             discountAmount,
@@ -86,19 +85,10 @@ public class CreateRentalUseCase {
 
         addDriversToRental(savedRental.getId(), request.driverIds(), request.primaryDriverId(), createdBy);
 
-        vehicle.changeStatus(VehicleStatus.RESERVED);
-        vehicleRepository.save(vehicle);
-        vehicleStatusService.recordStatusChange(
-            vehicle.getId(),
-            VehicleStatus.AVAILABLE,
-            VehicleStatus.RESERVED,
-            "RENTAL",
-            savedRental.getId(),
-            "Reserved for rental " + rentalNumber,
-            createdBy
-        );
+        // Not: Araç durumu DRAFT aşamasında değiştirilmez
+        // Araç rezervasyonu reserve() çağrıldığında yapılır
 
-        log.info("Rental created: {}", rentalNumber);
+        log.info("Rental created as DRAFT: {}", rentalNumber);
         return savedRental;
     }
 
@@ -149,6 +139,7 @@ public class CreateRentalUseCase {
             request.rentalType(),
             request.startDate(),
             request.endDate(),
+            request.termMonths(),
             request.kmPackageId()
         );
         

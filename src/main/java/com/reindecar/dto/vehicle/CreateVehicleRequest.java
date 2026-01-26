@@ -80,6 +80,12 @@ public record CreateVehicleRequest(
     @Schema(description = "Daily rental price", example = "500.00")
     BigDecimal dailyPrice,
 
+    @Schema(description = "Weekly rental price", example = "3000.00")
+    BigDecimal weeklyPrice,
+
+    @Schema(description = "Monthly rental price", example = "10000.00")
+    BigDecimal monthlyPrice,
+
     @Size(max = 1000)
     @Schema(description = "Additional notes")
     String notes

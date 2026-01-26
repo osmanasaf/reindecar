@@ -30,6 +30,8 @@ public record VehicleResponse(
     LocalDate inspectionExpiryDate,
     LocalDate registrationDate,
     BigDecimal dailyPrice,
+    BigDecimal weeklyPrice,
+    BigDecimal monthlyPrice,
     boolean isInsuranceExpiringSoon,
     boolean isInspectionExpiringSoon,
     String notes,

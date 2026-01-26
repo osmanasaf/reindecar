@@ -25,6 +25,8 @@ public record RentalResponse(
     int endKm,
     int totalKm,
     Long kmPackageId,
+    Integer customIncludedKm,
+    BigDecimal customExtraKmPrice,
     BigDecimal dailyPrice,
     BigDecimal totalPrice,
     BigDecimal discountAmount,

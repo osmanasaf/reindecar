@@ -15,6 +15,7 @@ public interface RentalMapper {
     @Mapping(target = "discountAmount", expression = "java(toAmount(rental.getDiscountAmount()))")
     @Mapping(target = "extraKmCharge", expression = "java(toAmount(rental.getExtraKmCharge()))")
     @Mapping(target = "grandTotal", expression = "java(toAmount(rental.getGrandTotal()))")
+    @Mapping(target = "customExtraKmPrice", expression = "java(toAmount(rental.getCustomExtraKmPrice()))")
     @Mapping(target = "currency", expression = "java(rental.getDailyPrice().getCurrency())")
     @Mapping(target = "isOverdue", expression = "java(rental.isOverdue())")
     @Mapping(target = "overdueDays", expression = "java(rental.getOverdueDays())")

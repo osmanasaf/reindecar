@@ -27,6 +27,9 @@ public record CalculatePriceRequest(
     @Schema(description = "Kiralama bitiş tarihi", example = "2026-02-15")
     LocalDate endDate,
 
+    @Schema(description = "Vade süresi (ay) - Leasing için", example = "24")
+    Integer termMonths,
+
     @Schema(description = "Km paketi ID (opsiyonel)", example = "1")
     Long kmPackageId
 ) {}

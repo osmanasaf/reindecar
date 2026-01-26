@@ -88,6 +88,16 @@ public class Rental extends BaseEntity {
     @Column(name = "km_package_id")
     private Long kmPackageId;
 
+    @Column(name = "custom_included_km")
+    private Integer customIncludedKm;
+
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "amount", column = @Column(name = "custom_extra_km_price_amount")),
+        @AttributeOverride(name = "currency", column = @Column(name = "custom_extra_km_price_currency"))
+    })
+    private Money customExtraKmPrice;
+
     @Embedded
     @AttributeOverrides({
         @AttributeOverride(name = "amount", column = @Column(name = "daily_price_amount")),
@@ -145,6 +155,8 @@ public class Rental extends BaseEntity {
             LocalDate startDate,
             LocalDate endDate,
             Long kmPackageId,
+            Integer customIncludedKm,
+            Money customExtraKmPrice,
             Money dailyPrice,
             Money totalPrice,
             Money discountAmount,
@@ -173,6 +185,8 @@ public class Rental extends BaseEntity {
         rental.startDate = startDate;
         rental.endDate = endDate;
         rental.kmPackageId = kmPackageId;
+        rental.customIncludedKm = customIncludedKm;
+        rental.customExtraKmPrice = customExtraKmPrice;
         rental.dailyPrice = dailyPrice;
         rental.totalPrice = totalPrice;
         rental.discountAmount = discountAmount != null ? discountAmount : Money.zero(dailyPrice.getCurrency());
@@ -182,6 +196,18 @@ public class Rental extends BaseEntity {
         rental.createdAt = Instant.now();
         rental.updatedAt = Instant.now();
         return rental;
+    }
+
+    public boolean hasCustomKmLimit() {
+        return customIncludedKm != null && customIncludedKm > 0;
+    }
+
+    public int getEffectiveIncludedKm(int packageIncludedKm) {
+        return hasCustomKmLimit() ? customIncludedKm : packageIncludedKm;
+    }
+
+    public Money getEffectiveExtraKmPrice(Money packageExtraKmPrice) {
+        return customExtraKmPrice != null ? customExtraKmPrice : packageExtraKmPrice;
     }
 
     public void reserve() {

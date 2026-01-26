@@ -41,12 +41,16 @@ public class KmPackage extends BaseEntity {
     @Column(nullable = false)
     private boolean active = true;
 
+    @Column(name = "category_id")
+    private Long categoryId;
+
     public static KmPackage create(
             String name,
             int includedKm,
             Money extraKmPrice,
             List<RentalType> applicableTypes,
-            boolean isUnlimited) {
+            boolean isUnlimited,
+            Long categoryId) {
         
         KmPackage kmPackage = new KmPackage();
         kmPackage.name = name;
@@ -55,7 +59,16 @@ public class KmPackage extends BaseEntity {
         kmPackage.applicableTypes = new ArrayList<>(applicableTypes);
         kmPackage.unlimited = isUnlimited;
         kmPackage.active = true;
+        kmPackage.categoryId = categoryId;
         return kmPackage;
+    }
+
+    public boolean isGlobal() {
+        return categoryId == null;
+    }
+
+    public boolean isForCategory(Long categoryId) {
+        return this.categoryId == null || this.categoryId.equals(categoryId);
     }
 
     public boolean isApplicableFor(RentalType rentalType) {
@@ -85,5 +98,29 @@ public class KmPackage extends BaseEntity {
 
     public boolean isUnlimited() {
         return unlimited;
+    }
+
+    public void update(String name, Integer includedKm, Money extraKmPrice, 
+                       List<RentalType> applicableTypes, Boolean unlimited, Boolean active,
+                       Long categoryId) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (includedKm != null) {
+            this.includedKm = includedKm;
+        }
+        if (extraKmPrice != null) {
+            this.extraKmPrice = extraKmPrice;
+        }
+        if (applicableTypes != null && !applicableTypes.isEmpty()) {
+            this.applicableTypes = new ArrayList<>(applicableTypes);
+        }
+        if (unlimited != null) {
+            this.unlimited = unlimited;
+        }
+        if (active != null) {
+            this.active = active;
+        }
+        this.categoryId = categoryId;
     }
 }

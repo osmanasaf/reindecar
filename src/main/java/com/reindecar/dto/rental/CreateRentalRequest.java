@@ -60,8 +60,17 @@ public record CreateRentalRequest(
     @Schema(description = "Rental end date", example = "2026-01-15")
     LocalDate endDate,
 
+    @Schema(description = "Term months for LEASING rentals", example = "24")
+    Integer termMonths,
+
     @Schema(description = "Kilometer package ID (optional)", example = "1")
     Long kmPackageId,
+
+    @Schema(description = "Custom included KM (overrides package value)", example = "7500")
+    Integer customIncludedKm,
+
+    @Schema(description = "Custom extra KM price (overrides package value)", example = "0.75")
+    BigDecimal customExtraKmPrice,
 
     @Schema(description = "Discount amount (optional)", example = "50.00")
     BigDecimal discountAmount,
