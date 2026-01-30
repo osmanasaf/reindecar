@@ -24,4 +24,8 @@ public enum RentalStatus {
     public boolean isFinalState() {
         return this == CLOSED || this == CANCELLED;
     }
+
+    public boolean blocksVehicleOrDriver() {
+        return this == RESERVED || this == ACTIVE || this == OVERDUE;
+    }
 }

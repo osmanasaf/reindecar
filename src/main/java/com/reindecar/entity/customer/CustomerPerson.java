@@ -87,9 +87,9 @@ public class CustomerPerson extends Customer {
             String address,
             String city) {
         
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
+        if (firstName != null) this.firstName = firstName;
+        if (lastName != null) this.lastName = lastName;
+        if (birthDate != null) this.birthDate = birthDate;
         setContactInfo(phone, email, address, city);
     }
 
@@ -99,10 +99,10 @@ public class CustomerPerson extends Customer {
             LocalDate licenseIssueDate,
             LocalDate licenseExpiryDate) {
         
-        this.licenseNumber = licenseNumber;
-        this.licenseClass = licenseClass;
-        this.licenseIssueDate = licenseIssueDate;
-        this.licenseExpiryDate = licenseExpiryDate;
+        if (licenseNumber != null) this.licenseNumber = licenseNumber;
+        if (licenseClass != null) this.licenseClass = licenseClass;
+        if (licenseIssueDate != null) this.licenseIssueDate = licenseIssueDate;
+        if (licenseExpiryDate != null) this.licenseExpiryDate = licenseExpiryDate;
     }
 
     public boolean isLicenseExpired() {

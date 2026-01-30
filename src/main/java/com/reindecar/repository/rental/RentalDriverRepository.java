@@ -27,4 +27,16 @@ public interface RentalDriverRepository extends JpaRepository<RentalDriver, Long
     List<RentalDriver> findByRentalIdOrdered(Long rentalId);
 
     int countByRentalId(Long rentalId);
+
+    @Query("SELECT COUNT(rd) > 0 FROM RentalDriver rd " +
+           "JOIN Rental r ON rd.rentalId = r.id " +
+           "WHERE rd.driverId = :driverId " +
+           "AND r.status IN ('RESERVED', 'ACTIVE', 'OVERDUE')")
+    boolean hasBlockingRental(Long driverId);
+
+    @Query("SELECT rd FROM RentalDriver rd " +
+           "JOIN Rental r ON rd.rentalId = r.id " +
+           "WHERE rd.driverId = :driverId " +
+           "AND r.status IN ('RESERVED', 'ACTIVE', 'OVERDUE')")
+    List<RentalDriver> findBlockingRentalsByDriverId(Long driverId);
 }

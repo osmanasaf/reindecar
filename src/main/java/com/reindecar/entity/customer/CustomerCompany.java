@@ -102,14 +102,14 @@ public class CustomerCompany extends Customer {
             String sector,
             Integer employeeCount) {
         
-        this.companyName = companyName;
-        this.taxOffice = taxOffice;
-        this.tradeRegisterNo = tradeRegisterNo;
-        this.invoiceAddress = invoiceAddress;
-        this.contactPersonName = contactPersonName;
-        this.contactPersonPhone = contactPersonPhone;
-        this.sector = sector;
-        this.employeeCount = employeeCount;
+        if (companyName != null) this.companyName = companyName;
+        if (taxOffice != null) this.taxOffice = taxOffice;
+        if (tradeRegisterNo != null) this.tradeRegisterNo = tradeRegisterNo;
+        if (invoiceAddress != null) this.invoiceAddress = invoiceAddress;
+        if (contactPersonName != null) this.contactPersonName = contactPersonName;
+        if (contactPersonPhone != null) this.contactPersonPhone = contactPersonPhone;
+        if (sector != null) this.sector = sector;
+        if (employeeCount != null) this.employeeCount = employeeCount;
         setContactInfo(phone, email, address, city);
     }
 

@@ -94,11 +94,11 @@ public class DamageReport extends BaseEntity {
             String description,
             Money estimatedCost) {
         
-        this.damageType = damageType;
-        this.location = location;
-        this.severity = severity;
-        this.description = description;
-        this.estimatedCost = estimatedCost;
+        if (damageType != null) this.damageType = damageType;
+        if (location != null) this.location = location;
+        if (severity != null) this.severity = severity;
+        if (description != null) this.description = description;
+        if (estimatedCost != null) this.estimatedCost = estimatedCost;
     }
 
     public void markAsRepaired(LocalDate repairedDate, Money repairCost) {

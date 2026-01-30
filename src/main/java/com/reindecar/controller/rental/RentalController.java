@@ -130,4 +130,19 @@ public class RentalController {
         List<VehicleResponse> vehicles = rentalService.getVehiclesByCustomerId(customerId);
         return ApiResponse.success(vehicles);
     }
+
+    @GetMapping("/company/{companyId}/vehicles")
+    @Operation(summary = "Şirkete kiralanan araçlar", description = "Bir şirkete kiralanan tüm araçları döner")
+    public ApiResponse<List<VehicleResponse>> getVehiclesRentedToCompany(@PathVariable Long companyId) {
+        List<VehicleResponse> vehicles = rentalService.getVehiclesRentedToCompany(companyId);
+        return ApiResponse.success(vehicles);
+    }
+
+    @GetMapping("/companies")
+    @Operation(summary = "Tüm şirket kiralamaları", description = "Şirketlere yapılan tüm kiralamaları döner")
+    public ApiResponse<PageResponse<RentalResponse>> getAllCompanyRentals(
+            @PageableDefault(size = 20, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        PageResponse<RentalResponse> rentals = rentalService.getAllCompanyRentals(pageable);
+        return ApiResponse.success(rentals);
+    }
 }

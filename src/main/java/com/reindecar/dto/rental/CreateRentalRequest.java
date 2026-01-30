@@ -5,6 +5,7 @@ import com.reindecar.entity.pricing.RentalType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -37,10 +38,12 @@ public record CreateRentalRequest(
     @Schema(description = "Name of contract signer")
     String contractSignerName,
 
-    @Schema(description = "List of driver IDs")
+    @NotEmpty(message = "En az bir sürücü gereklidir")
+    @Schema(description = "List of driver IDs", requiredMode = Schema.RequiredMode.REQUIRED)
     List<Long> driverIds,
 
-    @Schema(description = "Primary driver ID (must be in driverIds list)")
+    @NotNull(message = "Ana sürücü belirtilmelidir")
+    @Schema(description = "Primary driver ID (must be in driverIds list)", requiredMode = Schema.RequiredMode.REQUIRED)
     Long primaryDriverId,
 
     @NotNull(message = "Branch ID is required")

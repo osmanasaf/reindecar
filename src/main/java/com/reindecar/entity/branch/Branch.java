@@ -68,12 +68,12 @@ public class Branch extends AuditableEntity {
 
     public void updateInfo(String name, String city, String district, 
                           String address, String phone, String email) {
-        this.name = name;
-        this.city = city;
-        this.district = district;
-        this.address = address;
-        this.phone = phone;
-        this.email = email;
+        if (name != null) this.name = name;
+        if (city != null) this.city = city;
+        if (district != null) this.district = district;
+        if (address != null) this.address = address;
+        if (phone != null) this.phone = phone;
+        if (email != null) this.email = email;
     }
 
     public void activate() {

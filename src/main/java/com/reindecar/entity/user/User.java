@@ -73,10 +73,10 @@ public class User extends BaseEntity {
     }
 
     public void updateInfo(String email, String firstName, String lastName, Long branchId) {
-        this.email = email.toLowerCase();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.branchId = branchId;
+        if (email != null) this.email = email.toLowerCase();
+        if (firstName != null) this.firstName = firstName;
+        if (lastName != null) this.lastName = lastName;
+        if (branchId != null) this.branchId = branchId;
     }
 
     public void changePassword(String newPasswordHash) {

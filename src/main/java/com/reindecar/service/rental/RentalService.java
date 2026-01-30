@@ -202,4 +202,21 @@ public class RentalService {
     public List<Rental> getRentalsByVehicleId(Long vehicleId) {
         return rentalRepository.findAllByVehicleId(vehicleId);
     }
+
+    public List<VehicleResponse> getVehiclesRentedToCompany(Long companyId) {
+        log.info("Fetching vehicles rented to company: {}", companyId);
+        List<Long> vehicleIds = rentalRepository.findVehicleIdsByCompanyId(companyId);
+        return vehicleIds.stream()
+            .map(vehicleRepository::findById)
+            .filter(java.util.Optional::isPresent)
+            .map(java.util.Optional::get)
+            .map(vehicleMapper::toResponse)
+            .toList();
+    }
+
+    public PageResponse<RentalResponse> getAllCompanyRentals(Pageable pageable) {
+        log.info("Fetching all company rentals");
+        Page<Rental> rentals = rentalRepository.findAllCompanyRentals(pageable);
+        return PageResponse.of(rentals.map(rentalMapper::toResponse));
+    }
 }

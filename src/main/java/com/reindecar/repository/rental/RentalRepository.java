@@ -41,6 +41,12 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Query("SELECT DISTINCT r.vehicleId FROM Rental r WHERE r.customerId = :customerId")
     List<Long> findVehicleIdsByCustomerId(Long customerId);
 
+    @Query("SELECT DISTINCT r.vehicleId FROM Rental r WHERE r.customerId = :companyId AND r.customerType = 'COMPANY'")
+    List<Long> findVehicleIdsByCompanyId(Long companyId);
+
+    @Query("SELECT r FROM Rental r WHERE r.customerType = 'COMPANY' ORDER BY r.startDate DESC")
+    Page<Rental> findAllCompanyRentals(Pageable pageable);
+
     @Query("SELECT r FROM Rental r WHERE r.vehicleId = :vehicleId ORDER BY r.startDate DESC")
     Page<Rental> findByVehicleId(Long vehicleId, Pageable pageable);
 
@@ -58,4 +64,9 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
            "AND r.endDate BETWEEN :startDate AND :endDate " +
            "ORDER BY r.endDate ASC")
     List<Rental> findUpcomingReturns(LocalDate startDate, LocalDate endDate);
+
+    @Query("SELECT COUNT(r) FROM Rental r WHERE r.customerId = :customerId " +
+           "AND r.customerType = 'PERSONAL' " +
+           "AND r.status IN ('RESERVED', 'ACTIVE', 'OVERDUE')")
+    long countBlockingRentalsByPersonalCustomer(Long customerId);
 }

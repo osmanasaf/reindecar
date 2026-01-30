@@ -186,10 +186,10 @@ public class Vehicle extends AuditableEntity {
     public void updateInfo(
             String brand,
             String model,
-            int year,
+            Integer year,
             String color,
-            int engineCapacity,
-            int seatCount,
+            Integer engineCapacity,
+            Integer seatCount,
             LocalDate insuranceExpiryDate,
             LocalDate inspectionExpiryDate,
             Money dailyPrice,
@@ -197,18 +197,18 @@ public class Vehicle extends AuditableEntity {
             Money monthlyPrice,
             String notes) {
         
-        this.brand = brand;
-        this.model = model;
-        this.year = year;
-        this.color = color;
-        this.engineCapacity = engineCapacity;
-        this.seatCount = seatCount;
-        this.insuranceExpiryDate = insuranceExpiryDate;
-        this.inspectionExpiryDate = inspectionExpiryDate;
-        this.dailyPrice = dailyPrice;
-        this.weeklyPrice = weeklyPrice;
-        this.monthlyPrice = monthlyPrice;
-        this.notes = notes;
+        if (brand != null) this.brand = brand;
+        if (model != null) this.model = model;
+        if (year != null) this.year = year;
+        if (color != null) this.color = color;
+        if (engineCapacity != null) this.engineCapacity = engineCapacity;
+        if (seatCount != null) this.seatCount = seatCount;
+        if (insuranceExpiryDate != null) this.insuranceExpiryDate = insuranceExpiryDate;
+        if (inspectionExpiryDate != null) this.inspectionExpiryDate = inspectionExpiryDate;
+        if (dailyPrice != null) this.dailyPrice = dailyPrice;
+        if (weeklyPrice != null) this.weeklyPrice = weeklyPrice;
+        if (monthlyPrice != null) this.monthlyPrice = monthlyPrice;
+        if (notes != null) this.notes = notes;
     }
 
     public void changeStatus(VehicleStatus newStatus) {

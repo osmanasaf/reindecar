@@ -85,11 +85,11 @@ public class AuthorizedPerson extends BaseEntity {
             String phone,
             String email) {
         
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.title = title;
-        this.phone = phone;
-        this.email = email;
+        if (firstName != null) this.firstName = firstName;
+        if (lastName != null) this.lastName = lastName;
+        if (title != null) this.title = title;
+        if (phone != null) this.phone = phone;
+        if (email != null) this.email = email;
     }
 
     public void setAsPrimary() {

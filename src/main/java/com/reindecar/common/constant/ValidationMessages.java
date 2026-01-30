@@ -23,9 +23,13 @@ public final class ValidationMessages {
     public static final String DRIVER_UNKNOWN = "Bilinmeyen Sürücü";
     public static final String DRIVER_DUPLICATE_IN_REQUEST = "Sürücü listesinde tekrar eden kayıt var";
     public static final String RENTAL_PRIMARY_DRIVER_NOT_IN_LIST = "Ana sürücü listede olmalıdır";
+    public static final String RENTAL_DRIVER_REQUIRED = "Kiralama için en az bir sürücü gereklidir";
+    public static final String RENTAL_PRIMARY_DRIVER_REQUIRED = "Ana sürücü belirtilmelidir";
 
     public static final String RENTAL_CANNOT_MODIFY_STATUS = "Bu durumdaki kiralama için sürücü değiştirilemez: %s";
     public static final String RENTAL_DATE_INVALID = "Başlangıç tarihi bitiş tarihinden önce olmalıdır";
+    public static final String DRIVER_ALREADY_IN_ACTIVE_RENTAL = "Sürücü zaten aktif bir kiralamada: %s";
+    public static final String PERSONAL_CUSTOMER_RENTAL_LIMIT_EXCEEDED = "Bireysel müşteri aynı anda sadece bir kiralama yapabilir";
 
     public static final String EXTRA_ITEM_CODE_EXISTS = "Bu kod zaten kullanılıyor: %s";
     public static final String EXTRA_ITEM_NOT_FOUND = "Kalem türü bulunamadı: %s";

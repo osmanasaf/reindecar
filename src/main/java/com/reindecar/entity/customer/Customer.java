@@ -85,10 +85,10 @@ public abstract class Customer extends AuditableEntity {
     }
 
     protected void setContactInfo(String phone, String email, String address, String city) {
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-        this.city = city;
+        if (phone != null) this.phone = phone;
+        if (email != null) this.email = email;
+        if (address != null) this.address = address;
+        if (city != null) this.city = city;
     }
 
     public void updateCreditScore(Integer newScore) {

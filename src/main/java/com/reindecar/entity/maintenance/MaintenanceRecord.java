@@ -91,7 +91,7 @@ public class MaintenanceRecord extends BaseEntity {
     public void update(
             MaintenanceType maintenanceType,
             LocalDate maintenanceDate,
-            int currentKm,
+            Integer currentKm,
             Money cost,
             String serviceProvider,
             String description,
@@ -99,14 +99,14 @@ public class MaintenanceRecord extends BaseEntity {
             List<String> partsReplaced,
             String paintColor) {
         
-        this.maintenanceType = maintenanceType;
-        this.maintenanceDate = maintenanceDate;
-        this.currentKm = currentKm;
-        this.cost = cost;
-        this.serviceProvider = serviceProvider;
-        this.description = description;
-        this.affectedZones = affectedZones != null ? new ArrayList<>(affectedZones) : new ArrayList<>();
-        this.partsReplaced = partsReplaced != null ? new ArrayList<>(partsReplaced) : new ArrayList<>();
-        this.paintColor = paintColor;
+        if (maintenanceType != null) this.maintenanceType = maintenanceType;
+        if (maintenanceDate != null) this.maintenanceDate = maintenanceDate;
+        if (currentKm != null) this.currentKm = currentKm;
+        if (cost != null) this.cost = cost;
+        if (serviceProvider != null) this.serviceProvider = serviceProvider;
+        if (description != null) this.description = description;
+        if (affectedZones != null) this.affectedZones = new ArrayList<>(affectedZones);
+        if (partsReplaced != null) this.partsReplaced = new ArrayList<>(partsReplaced);
+        if (paintColor != null) this.paintColor = paintColor;
     }
 }

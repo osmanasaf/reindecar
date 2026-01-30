@@ -21,6 +21,7 @@ import com.reindecar.repository.rental.RentalDriverRepository;
 import com.reindecar.repository.rental.RentalRepository;
 import com.reindecar.repository.vehicle.VehicleRepository;
 import com.reindecar.service.pricing.PriceCalculationService;
+import com.reindecar.service.rental.validation.RentalValidationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,10 +44,14 @@ public class CreateRentalUseCase {
     private final DriverRepository driverRepository;
     private final RentalDriverRepository rentalDriverRepository;
     private final PriceCalculationService priceCalculationService;
+    private final RentalValidationService rentalValidationService;
 
     @Transactional
     public Rental execute(CreateRentalRequest request, String createdBy) {
         log.info("Creating rental for vehicle: {}, customer: {}", request.vehicleId(), request.customerId());
+
+        // Önce yeni validasyon servisini çalıştır (sürücü müsaitlik, müşteri limiti)
+        rentalValidationService.validate(request);
 
         validateCustomerNotBlacklisted(request.customerId());
         validateVehicleAvailable(request.vehicleId());
@@ -113,10 +118,11 @@ public class CreateRentalUseCase {
 
     private void validateDrivers(List<Long> driverIds, Long primaryDriverId) {
         if (driverIds == null || driverIds.isEmpty()) {
-            if (primaryDriverId != null) {
-                throw new BusinessException(ErrorCode.INVALID_PARAMETER, ValidationMessages.RENTAL_PRIMARY_DRIVER_NOT_IN_LIST);
-            }
-            return;
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, ValidationMessages.RENTAL_DRIVER_REQUIRED);
+        }
+
+        if (primaryDriverId == null) {
+            throw new BusinessException(ErrorCode.INVALID_PARAMETER, ValidationMessages.RENTAL_PRIMARY_DRIVER_REQUIRED);
         }
 
         Set<Long> uniqueDriverIds = new HashSet<>(driverIds);
@@ -124,7 +130,7 @@ public class CreateRentalUseCase {
             throw new BusinessException(ErrorCode.DUPLICATE_ENTITY, ValidationMessages.DRIVER_DUPLICATE_IN_REQUEST);
         }
 
-        if (primaryDriverId != null && !uniqueDriverIds.contains(primaryDriverId)) {
+        if (!uniqueDriverIds.contains(primaryDriverId)) {
             throw new BusinessException(ErrorCode.INVALID_PARAMETER, ValidationMessages.RENTAL_PRIMARY_DRIVER_NOT_IN_LIST);
         }
 

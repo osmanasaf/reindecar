@@ -10,6 +10,7 @@ import com.reindecar.entity.customer.Driver;
 import com.reindecar.entity.rental.Rental;
 import com.reindecar.entity.rental.RentalDriver;
 import com.reindecar.entity.rental.RentalStatus;
+import com.reindecar.exception.rental.DriverAlreadyInActiveRentalException;
 import com.reindecar.repository.customer.DriverRepository;
 import com.reindecar.repository.rental.RentalDriverRepository;
 import com.reindecar.repository.rental.RentalRepository;
@@ -61,12 +62,22 @@ public class RentalDriverService {
         Driver driver = findDriverOrThrow(request.driverId());
         validateDriverEligible(driver);
         validateDriverNotAlreadyAdded(rentalId, request.driverId());
+        
+        // Yeni validasyon: Sürücü başka aktif kiralamada mı?
+        validateDriverAvailable(request.driverId());
 
         RentalDriver rentalDriver = createRentalDriver(rentalId, request, addedBy);
         RentalDriver saved = rentalDriverRepository.save(rentalDriver);
 
         log.info("Driver {} added to rental {}", request.driverId(), rentalId);
         return toResponse(saved);
+    }
+
+    private void validateDriverAvailable(Long driverId) {
+        if (rentalDriverRepository.hasBlockingRental(driverId)) {
+            log.warn("Driver {} already has an active rental", driverId);
+            throw new DriverAlreadyInActiveRentalException(driverId);
+        }
     }
 
     private void validateDriverEligible(Driver driver) {
