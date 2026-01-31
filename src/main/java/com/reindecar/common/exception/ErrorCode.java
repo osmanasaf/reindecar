@@ -50,7 +50,11 @@ public enum ErrorCode {
 
     INTERNAL_ERROR("S001", "Beklenmeyen bir hata oluştu", HttpStatus.INTERNAL_SERVER_ERROR),
     DATABASE_ERROR("S002", "Veritabanı hatası", HttpStatus.INTERNAL_SERVER_ERROR),
-    EXTERNAL_SERVICE_ERROR("S003", "Dış servis hatası: %s", HttpStatus.SERVICE_UNAVAILABLE);
+    EXTERNAL_SERVICE_ERROR("S003", "Dış servis hatası: %s", HttpStatus.SERVICE_UNAVAILABLE),
+    JSON_PARSE_ERROR("S004", "JSON formatı hatalı: %s", HttpStatus.BAD_REQUEST),
+    MISSING_PARAMETER("S005", "Eksik parametre: %s", HttpStatus.BAD_REQUEST),
+    METHOD_NOT_ALLOWED("S006", "HTTP metodu desteklenmiyor: %s", HttpStatus.METHOD_NOT_ALLOWED),
+    CONSTRAINT_VIOLATION("S007", "Veri bütünlük hatası: %s", HttpStatus.CONFLICT);
 
     private final String code;
     private final String messageTemplate;
